@@ -17,6 +17,7 @@
 		A0177AF62C70C720005051A9 /* NoteDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0177AF52C70C720005051A9 /* NoteDetailController.swift */; };
 		A0177AF82C72543E005051A9 /* NoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0177AF72C72543E005051A9 /* NoteDetailView.swift */; };
 		A0177AFB2C75F931005051A9 /* NoteListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0177AFA2C75F931005051A9 /* NoteListModel.swift */; };
+		A0177B002C7CD004005051A9 /* NoteDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0177AFF2C7CD004005051A9 /* NoteDetailModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		A0177AF52C70C720005051A9 /* NoteDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailController.swift; sourceTree = "<group>"; };
 		A0177AF72C72543E005051A9 /* NoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailView.swift; sourceTree = "<group>"; };
 		A0177AFA2C75F931005051A9 /* NoteListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteListModel.swift; sourceTree = "<group>"; };
+		A0177AFF2C7CD004005051A9 /* NoteDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,10 +66,8 @@
 		A0177AB62C6BFD21005051A9 /* MyNotes */ = {
 			isa = PBXGroup;
 			children = (
-				A0177AF92C75F90B005051A9 /* Model */,
-				A0177ACB2C6CA500005051A9 /* Views */,
-				A0177AEF2C6E11FD005051A9 /* Cell */,
-				A0177AF42C70C6FB005051A9 /* Controllers */,
+				A0177AFC2C7CC3E5005051A9 /* NotesList */,
+				A0177AFD2C7CC3F5005051A9 /* NotesDetail */,
 				A0177AB72C6BFD21005051A9 /* AppDelegate.swift */,
 				A0177AB92C6BFD21005051A9 /* SceneDelegate.swift */,
 				A0177AC02C6BFD23005051A9 /* Assets.xcassets */,
@@ -81,7 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				A0177ACC2C6CA526005051A9 /* NotesListView.swift */,
-				A0177AF72C72543E005051A9 /* NoteDetailView.swift */,
+				A0177AEF2C6E11FD005051A9 /* Cell */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -98,7 +98,6 @@
 			isa = PBXGroup;
 			children = (
 				A0177ABB2C6BFD21005051A9 /* NotesListController.swift */,
-				A0177AF52C70C720005051A9 /* NoteDetailController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -109,6 +108,26 @@
 				A0177AFA2C75F931005051A9 /* NoteListModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		A0177AFC2C7CC3E5005051A9 /* NotesList */ = {
+			isa = PBXGroup;
+			children = (
+				A0177AF92C75F90B005051A9 /* Model */,
+				A0177ACB2C6CA500005051A9 /* Views */,
+				A0177AF42C70C6FB005051A9 /* Controllers */,
+			);
+			path = NotesList;
+			sourceTree = "<group>";
+		};
+		A0177AFD2C7CC3F5005051A9 /* NotesDetail */ = {
+			isa = PBXGroup;
+			children = (
+				A0177AFF2C7CD004005051A9 /* NoteDetailModel.swift */,
+				A0177AF72C72543E005051A9 /* NoteDetailView.swift */,
+				A0177AF52C70C720005051A9 /* NoteDetailController.swift */,
+			);
+			path = NotesDetail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,6 +208,7 @@
 				A0177AF62C70C720005051A9 /* NoteDetailController.swift in Sources */,
 				A0177ABA2C6BFD21005051A9 /* SceneDelegate.swift in Sources */,
 				A0177AF82C72543E005051A9 /* NoteDetailView.swift in Sources */,
+				A0177B002C7CD004005051A9 /* NoteDetailModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,9 @@
 import UIKit
 
 protocol NoteDetailViewProtocol: UIView {
-    
+    func getTitle() -> String
+    func getDetailText() -> String
+    func setText(title: String?, detailText: String?)
 }
 
 final class NoteDetailView: UIView, NoteDetailViewProtocol {
@@ -28,6 +30,18 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func getTitle() -> String {
+        return textField.text!   // исправить
+    }
+    
+    func getDetailText() -> String {
+        return textView.text
+    }
+    
+    func setText(title: String?,detailText: String?) {
+        textField.text = title
+        textView.text = detailText
+    }
 }
 
 private extension NoteDetailView {
@@ -35,7 +49,6 @@ private extension NoteDetailView {
     func setupLoyaut() {
         addSubview(textField)
         addSubview(textView)
-        
         
         NSLayoutConstraint.activate([
             textView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
@@ -52,16 +65,15 @@ private extension NoteDetailView {
     
     func makeTextField() -> UITextField {
         let textField = UITextField()
-        textField.text = "UITextField"
-        textField.font = UIFont.systemFont(ofSize: 28, weight: .bold)
         textField.textColor = .white
+        textField.font = UIFont.systemFont(ofSize: 28, weight: .bold)
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.attributedPlaceholder = NSAttributedString(string: "Заголовок", attributes:  [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         return textField
     }
     
     func makeTextView() -> UITextView {
         let textView = UITextView()
-        textView.text = "UITextView"
         textView.font = UIFont.systemFont(ofSize: 20)
         textView.textColor = .white
         textView.backgroundColor = .black

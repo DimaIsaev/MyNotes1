@@ -25,7 +25,7 @@ final class NoteCell: UITableViewCell {
     
     func configureLabels(with note: Note) {
         cellTitle.text = note.title
-        cellDateLabel.text = note.date
+        cellDateLabel.text = note.detailText
     }
 }
 

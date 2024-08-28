@@ -9,13 +9,14 @@ import UIKit
 
 protocol NotesListControllerProtocol: AnyObject {
     func didSelect(noteIndex: Int)
+    func didTapAddBtn()
 }
 
 final class NotesListController: UIViewController, NotesListControllerProtocol {
     
-    private let model: NoteListModelProtocol
-    
     private lazy var contentView: NotesListViewProtocol = makeContentView()
+    
+    private let model: NoteListModelProtocol
     
     init(model: NoteListModelProtocol) {
         self.model = model
@@ -45,7 +46,17 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
     }
     
     func didSelect(noteIndex: Int) {
-        navigationController?.pushViewController(NoteDetailController(), animated: true)
+        let note = model.notes[noteIndex]
+        let model = NoteDetailModel(storedTitle: note.title, storedDetailText: note.detailText)
+        let detailController = NoteDetailController(model: model)
+        navigationController?.pushViewController(detailController, animated: true)
+    }
+    
+    func didTapAddBtn() {
+        let model = NoteDetailModel(storedTitle: nil, storedDetailText: nil)
+        let detailController = NoteDetailController(model: model)
+        detailController.delegate = self
+        navigationController?.pushViewController(detailController, animated: true)
     }
     
     private func makeContentView() -> NotesListViewProtocol {
@@ -59,11 +70,19 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         navigationController?.navigationBar.tintColor = .systemOrange
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapAddButton))
     }
     
     @objc func didTapAddButton() {
         
+    }
+}
+
+extension NotesListController: NoteDetailControllerDelegate {
+    
+    func didCreate(note: Note) {
+        model.saveNote(note: note)
+        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
 }
 

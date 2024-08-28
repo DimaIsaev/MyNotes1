@@ -12,17 +12,19 @@ protocol NotesListViewProtocol: UIView {
 }
 
 final class NotesListView: UIView, NotesListViewProtocol {
+    
     struct ViewModel {
         let notes: [Note]
     }
     
     private lazy var tableView: UITableView = makeTableView()
+    private lazy var addButton: UIButton = makeAddButton()
     
     var viewModel: ViewModel?
     
-    var controller: NotesListControllerProtocol
+    weak var controller: NotesListControllerProtocol?
     
-    init(controller: NotesListControllerProtocol) {
+    init(controller: NotesListControllerProtocol) { // можно засетить в свойство(property)
         self.controller = controller
         super.init(frame: .zero)
         setupLayout()
@@ -34,6 +36,7 @@ final class NotesListView: UIView, NotesListViewProtocol {
     
     func update(for viewModel: ViewModel) {
         self.viewModel = viewModel
+        tableView.reloadData()
     }
 }
 
@@ -47,8 +50,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        if let cell = cell as? NoteCell, let viewModel
-        {
+        if let cell = cell as? NoteCell, let viewModel {
             cell.configureLabels(with: viewModel.notes[indexPath.row])
         }
         cell.selectionStyle = .none
@@ -58,7 +60,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     }
         
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            controller.didSelect(noteIndex: indexPath.row)
+            controller?.didSelect(noteIndex: indexPath.row)
         }
 }
 
@@ -66,10 +68,14 @@ private extension NotesListView {
     
     func setupLayout() {
         addSubview(tableView)
+        addSubview(addButton)
         
         NSLayoutConstraint.activate([
             tableView.heightAnchor.constraint(equalTo: self.heightAnchor),
             tableView.widthAnchor.constraint(equalTo: self.widthAnchor),
+            
+            addButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
+            addButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -45)
         ])
     }
     
@@ -82,5 +88,22 @@ private extension NotesListView {
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }
+    
+    @objc func didTapAddButton() {
+        controller?.didTapAddBtn()
+    }
+    
+    func makeAddButton() -> UIButton {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        btn.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        btn.contentVerticalAlignment = .fill
+        btn.contentHorizontalAlignment = .fill
+        btn.tintColor = .systemOrange
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        btn.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        return btn
     }
 }

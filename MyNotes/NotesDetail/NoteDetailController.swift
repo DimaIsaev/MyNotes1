@@ -8,18 +8,36 @@
 import UIKit
 
 protocol NoteDetailControllerProtocol: AnyObject {
-    
+
+}
+
+protocol NoteDetailControllerDelegate: AnyObject {
+    func didCreate(note: Note)
 }
 
 final class NoteDetailController: UIViewController, NoteDetailControllerProtocol {
-    
+
     private lazy var contentView: NoteDetailViewProtocol = makeContentView()
+    
+    weak var delegate: NoteDetailControllerDelegate?
+    
+    var model: NoteDetailModelProtocol
+    
+    init(model: NoteDetailModelProtocol) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.largeTitleDisplayMode = .never
         setupNavigationBarItem()
         setupView()
+        contentView.setText(title: model.title, detailText: model.detailText)
     }
     
     func setupView() {
@@ -40,16 +58,18 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
     }
     
     private func setupNavigationBarItem() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissKeyboard))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Готово", style: .plain, target: self, action: #selector(dismissKeyboard))
         navigationItem.titleView?.tintColor = .systemOrange
     }
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+        delegate?.didCreate(
+            note: Note(
+                title: contentView.getTitle(),
+                detailText: contentView.getDetailText()
+            )
+        )
     }
-    
-
-    
-
     
 }
