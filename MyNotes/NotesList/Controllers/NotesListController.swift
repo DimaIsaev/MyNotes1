@@ -9,6 +9,7 @@ import UIKit
 
 protocol NotesListControllerProtocol: AnyObject {
     func didSelect(noteIndex: Int)
+    func didDelete(noteIndex: Int)
     func didTapAddBtn()
 }
 
@@ -52,6 +53,11 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         navigationController?.pushViewController(detailController, animated: true)
     }
     
+    func didDelete(noteIndex: Int) {
+        model.deleteNote(noteIndex: noteIndex)
+        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
+    }
+    
     func didTapAddBtn() {
         let model = NoteDetailModel(storedTitle: nil, storedDetailText: nil)
         let detailController = NoteDetailController(model: model)
@@ -83,6 +89,7 @@ extension NotesListController: NoteDetailControllerDelegate {
     func didCreate(note: Note) {
         model.saveNote(note: note)
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
+        self.contentView.reloadTableView()
     }
 }
 

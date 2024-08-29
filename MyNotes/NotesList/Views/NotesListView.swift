@@ -9,6 +9,7 @@ import UIKit
 
 protocol NotesListViewProtocol: UIView {
     func update(for viewModel: NotesListView.ViewModel)
+    func reloadTableView()
 }
 
 final class NotesListView: UIView, NotesListViewProtocol {
@@ -36,6 +37,9 @@ final class NotesListView: UIView, NotesListViewProtocol {
     
     func update(for viewModel: ViewModel) {
         self.viewModel = viewModel
+    }
+    
+    func reloadTableView() {
         tableView.reloadData()
     }
 }
@@ -56,12 +60,23 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         
         return cell
-
     }
-        
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            controller?.didSelect(noteIndex: indexPath.row)
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        controller?.didSelect(noteIndex: indexPath.row)
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            controller?.didDelete(noteIndex: indexPath.row)
+            let path = IndexPath(row: indexPath.row, section: 0)
+            tableView.deleteRows(at: [path], with: .top)
         }
+    }
 }
 
 private extension NotesListView {

@@ -16,6 +16,7 @@ protocol NoteListModelProtocol {
     var notes: [Note] {get}
     
     func saveNote(note: Note)
+    func deleteNote(noteIndex: Int)
 }
 
 final class NoteListModel {
@@ -34,11 +35,15 @@ final class NoteListModel {
 }
 
 extension NoteListModel: NoteListModelProtocol {
+    var notes: [Note] {
+        storedNotes
+    }
+    
     func saveNote(note: Note) {
         storedNotes.insert(note, at: 0)
     }
     
-    var notes: [Note] {
-        storedNotes 
+    func deleteNote(noteIndex: Int) {
+        storedNotes.remove(at: noteIndex)
     }
 }
