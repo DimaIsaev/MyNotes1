@@ -19,6 +19,8 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
     
     private let model: NoteListModelProtocol
     
+    private var noteIndex: Int?
+    
     init(model: NoteListModelProtocol) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
@@ -45,16 +47,26 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
-    
+
     func didSelect(noteIndex: Int) {
         let note = model.notes[noteIndex]
+        self.noteIndex = noteIndex
         let model = NoteDetailModel(storedTitle: note.title, storedDetailText: note.detailText)
         let detailController = NoteDetailController(model: model)
+        detailController.delegate = self
         navigationController?.pushViewController(detailController, animated: true)
     }
     
     func didDelete(noteIndex: Int) {
         model.deleteNote(noteIndex: noteIndex)
+        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
+    }
+    
+    func editNote(note: Note) {
+        if let noteIndex = noteIndex {
+            model.deleteNote(noteIndex: noteIndex)
+        }
+        model.saveNote(note: note)
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
     
@@ -85,11 +97,14 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
 }
 
 extension NotesListController: NoteDetailControllerDelegate {
-    
     func didCreate(note: Note) {
         model.saveNote(note: note)
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
-        self.contentView.reloadTableView()
+    }
+    
+    func didEdit(note: Note) {
+        editNote(note: note)
+        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
 }
 

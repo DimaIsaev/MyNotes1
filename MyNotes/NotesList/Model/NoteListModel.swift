@@ -9,7 +9,7 @@ import Foundation
 
 struct Note {
     let title: String
-    let detailText: String  
+    let detailText: String
 }
 
 protocol NoteListModelProtocol {
@@ -35,6 +35,7 @@ final class NoteListModel {
 }
 
 extension NoteListModel: NoteListModelProtocol {
+    
     var notes: [Note] {
         storedNotes
     }

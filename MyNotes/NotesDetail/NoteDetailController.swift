@@ -13,6 +13,7 @@ protocol NoteDetailControllerProtocol: AnyObject {
 
 protocol NoteDetailControllerDelegate: AnyObject {
     func didCreate(note: Note)
+    func didEdit(note: Note)
 }
 
 final class NoteDetailController: UIViewController, NoteDetailControllerProtocol {
@@ -35,9 +36,10 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.largeTitleDisplayMode = .never
+        
         setupNavigationBarItem()
         setupView()
-        contentView.setText(title: model.title, detailText: model.detailText)
+        contentView.setText(title: model.title ?? "", detailText: model.detailText ?? "")
     }
     
     func setupView() {
@@ -64,12 +66,12 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
-        delegate?.didCreate(
-            note: Note(
-                title: contentView.getTitle(),
-                detailText: contentView.getDetailText()
-            )
-        )
+        if model.title == nil, model.detailText == nil {
+            delegate?.didCreate(note: Note(title: contentView.getTitle(),
+                                           detailText: contentView.getDetailText()))
+        } else {
+            delegate?.didEdit(note: Note(title: contentView.getTitle(),
+                                            detailText: contentView.getDetailText()))
+        }
     }
-    
 }

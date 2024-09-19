@@ -8,15 +8,16 @@
 import UIKit
 
 protocol NoteDetailViewProtocol: UIView {
-    func getTitle() -> String
+    func getTitle() -> String 
     func getDetailText() -> String
-    func setText(title: String?, detailText: String?)
+    func setText(title: String, detailText: String)
 }
 
 final class NoteDetailView: UIView, NoteDetailViewProtocol {
-    
-    lazy var textField: UITextField = makeTextField()
-    lazy var textView: UITextView = makeTextView()
+
+    private lazy var textView: UITextView = makeTextView()
+    private lazy var title = makeTitle()
+    private lazy var detailText = makeDetailText()
     
     var controller: NoteDetailControllerProtocol
     
@@ -31,54 +32,62 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
     }
     
     func getTitle() -> String {
-        return textField.text!   // исправить
+        return title
     }
     
     func getDetailText() -> String {
-        return textView.text
+        return detailText
     }
     
-    func setText(title: String?,detailText: String?) {
-        textField.text = title
-        textView.text = detailText
+    func setText(title: String, detailText: String) {
+        textView.text = title + "\n" + detailText
     }
 }
 
 private extension NoteDetailView {
     
     func setupLoyaut() {
-        addSubview(textField)
         addSubview(textView)
         
         NSLayoutConstraint.activate([
             textView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            textView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 70),
+            textView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 45),
             textView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -56),
             textView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
-            textField.bottomAnchor.constraint(equalTo: textView.topAnchor, constant: -10),
-            textField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            textField.heightAnchor.constraint(equalToConstant: 30),
-            textField.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -70)
         ])
     }
-    
-    func makeTextField() -> UITextField {
-        let textField = UITextField()
-        textField.textColor = .white
-        textField.font = UIFont.systemFont(ofSize: 28, weight: .bold)
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.attributedPlaceholder = NSAttributedString(string: "Заголовок", attributes:  [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        return textField
-    }
-    
+
     func makeTextView() -> UITextView {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 20)
         textView.textColor = .white
         textView.backgroundColor = .black
         textView.translatesAutoresizingMaskIntoConstraints = false
+        
         return textView
     }
+    
+    func makeTitle() -> String {
+        var title: String
+        let start = textView.text.startIndex
+        let end = textView.text.firstIndex(of: "\n") ?? textView.text.endIndex
+        let range = start..<end
+        let mySubstring = textView.text[range]
+        
+        title = String(mySubstring)
+        return title
+    }
+    
+    func makeDetailText() -> String {
+        let detailText: String
+        let start = textView.text.index(after: textView.text.firstIndex(of: "\n") ?? textView.text.startIndex)
+        let end = textView.text.endIndex
+        let range = start..<end
+        let mySubstring = textView.text[range]
+        
+        detailText = String(mySubstring)
+        return detailText
+    }
+            
     
 }

@@ -10,11 +10,12 @@ import Foundation
 protocol NoteDetailModelProtocol {
     var title: String? {get}
     var detailText: String? {get}
+
 }
 
 final class NoteDetailModel {
-    private let storedTitle: String?
-    private let storedDetailText: String?
+    private var storedTitle: String?
+    private var storedDetailText: String?
     
     init(storedTitle: String?, storedDetailText: String?) {
         self.storedTitle = storedTitle
