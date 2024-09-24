@@ -43,6 +43,14 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         contentView.setText(text: model.text)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if model.isNew {
+            contentView.becomeFirstResponder()
+        }
+    }
+    
     func setupView() {
         view.addSubview(contentView)
         
@@ -70,44 +78,17 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         
         let text = contentView.getText()
         
-        if text != nil {
-            if model.text == nil {
+        if let text {
+            if model.isNew {
                 delegate?.didCreateNote(note: Note(text: text))
-            } else if model.text != nil {
+            } else {
                 delegate?.didEditNote(note: Note(text: text))
             }
         } else {
-            if model.text == nil {
-                delegate?.didCreateNote(note: Note(text: text))
-                delegate?.didDeleteNote(note: Note(text: text))
-            } else if model.text != nil {
-                delegate?.didEditNote(note: Note(text: text))
-                delegate?.didDeleteNote(note: Note(text: text))
+            if !model.isNew {
+                delegate?.didDeleteNote(note: Note(text: "t")) // TODO: Удалять по id
             }
         }
     }
     
-    @objc func dismissKeyboard1() { //пробная
-        view.endEditing(true)
-        
-        let text = contentView.getText()
-        
-        if model.text != model.text && model.text != text {
-            if text != nil && text != model.text {
-                if model.text == nil {
-                    delegate?.didCreateNote(note: Note(text: text))
-                } else if model.text != nil {
-                    delegate?.didEditNote(note: Note(text: text))
-                }
-            } else if text == nil && text != model.text {
-                if model.text == nil {
-                    delegate?.didCreateNote(note: Note(text: text))
-                    delegate?.didDeleteNote(note: Note(text: text))
-                } else if model.text != nil {
-                    delegate?.didEditNote(note: Note(text: text))
-                    delegate?.didDeleteNote(note: Note(text: text))
-                }
-            }
-        }
-    }
 }

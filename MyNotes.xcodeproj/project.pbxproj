@@ -123,11 +123,19 @@
 		A0177AFD2C7CC3F5005051A9 /* NotesDetail */ = {
 			isa = PBXGroup;
 			children = (
-				A0177AFF2C7CD004005051A9 /* NoteDetailModel.swift */,
+				A0BE1C0D2CA33FEE00706CA8 /* Model */,
 				A0177AF72C72543E005051A9 /* NoteDetailView.swift */,
 				A0177AF52C70C720005051A9 /* NoteDetailController.swift */,
 			);
 			path = NotesDetail;
+			sourceTree = "<group>";
+		};
+		A0BE1C0D2CA33FEE00706CA8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A0177AFF2C7CD004005051A9 /* NoteDetailModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

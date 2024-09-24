@@ -31,6 +31,7 @@ final class NoteCell: UITableViewCell {
             let startTitle = text.startIndex
             let endTitle = text.firstIndex(of: "\n") ?? text.endIndex
             let titleSubstring = text[startTitle..<endTitle]
+            
             title = String(titleSubstring)
         }
         
@@ -39,6 +40,7 @@ final class NoteCell: UITableViewCell {
                 let startDetailText = text.index(after: index)
                 let endDetailText = text.endIndex
                 let detailTextSubstring = text[startDetailText..<endDetailText]
+                
                 detailText = String(detailTextSubstring)
             }
         }
@@ -80,4 +82,5 @@ private extension NoteCell {
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }
+
 }

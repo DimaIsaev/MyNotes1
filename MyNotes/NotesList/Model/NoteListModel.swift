@@ -8,11 +8,11 @@
 import Foundation
 
 struct Note {
-    let text: String?
+    let text: String
 }
 
 protocol NoteListModelProtocol {
-    var notes: [Note] {get}
+    var notes: [Note] { get }
     
     func saveNote(note: Note)
     func deleteNote(noteIndex: Int)

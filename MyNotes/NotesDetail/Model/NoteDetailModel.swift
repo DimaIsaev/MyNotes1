@@ -8,7 +8,8 @@
 import Foundation
 
 protocol NoteDetailModelProtocol {
-    var text: String? {get}
+    var text: String? { get }
+    var isNew: Bool { get }
 }
 
 final class NoteDetailModel {
@@ -20,5 +21,10 @@ final class NoteDetailModel {
 }
 
 extension NoteDetailModel: NoteDetailModelProtocol {
-    var text: String? {storedText}
+    var isNew: Bool {
+        return text == nil
+    }
+    
+    var text: String? { storedText }
+    
 }

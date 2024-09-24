@@ -29,24 +29,15 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
     }
 
     func getText() -> String? {
-        var text: String?
-        
-        if !textView.text.isEmpty {
-            if let title = makeTitle(text: textView.text) {
-                if let detailText = makeDetailText(text: textView.text) {
-                    text = title + "\n" + detailText
-                } else {
-                    text = title
-                }
-            } else {
-                if let detailText = makeDetailText(text: textView.text) {
-                    text = "\n" + detailText
-                }
-            }
-        } else {
-            text = nil
+        if textView.text.isEmpty {
+            return nil
         }
-        return text
+        return textView.text
+        
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        textView.becomeFirstResponder()
     }
     
     func setText(text: String?) {   //УПРОСТИТЬ
@@ -66,6 +57,7 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
     }
 }
 
+// MARK: - UI Elements
 private extension NoteDetailView {
     
     func setupLoyaut() {
