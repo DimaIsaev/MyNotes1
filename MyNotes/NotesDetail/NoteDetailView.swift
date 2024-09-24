@@ -8,16 +8,13 @@
 import UIKit
 
 protocol NoteDetailViewProtocol: UIView {
-    func getTitle() -> String 
-    func getDetailText() -> String
-    func setText(title: String, detailText: String)
+    func getText() -> String?
+    func setText(text: String?)
 }
 
 final class NoteDetailView: UIView, NoteDetailViewProtocol {
 
     private lazy var textView: UITextView = makeTextView()
-    private lazy var title = makeTitle()
-    private lazy var detailText = makeDetailText()
     
     var controller: NoteDetailControllerProtocol
     
@@ -30,17 +27,42 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func getTitle() -> String {
-        return title
+
+    func getText() -> String? {
+        var text: String?
+        
+        if !textView.text.isEmpty {
+            if let title = makeTitle(text: textView.text) {
+                if let detailText = makeDetailText(text: textView.text) {
+                    text = title + "\n" + detailText
+                } else {
+                    text = title
+                }
+            } else {
+                if let detailText = makeDetailText(text: textView.text) {
+                    text = "\n" + detailText
+                }
+            }
+        } else {
+            text = nil
+        }
+        return text
     }
     
-    func getDetailText() -> String {
-        return detailText
-    }
-    
-    func setText(title: String, detailText: String) {
-        textView.text = title + "\n" + detailText
+    func setText(text: String?) {   //УПРОСТИТЬ
+        if let text = text {
+            if let title = makeTitle(text: text) {
+                if let detailText = makeDetailText(text: text) {
+                    textView.text = title + "\n" + detailText
+                } else {
+                    textView.text = title
+                }
+            } else {
+                if let detailText = makeDetailText(text: text) {
+                    textView.text = "\n" + detailText
+                }
+            }
+        }
     }
 }
 
@@ -63,31 +85,35 @@ private extension NoteDetailView {
         textView.textColor = .white
         textView.backgroundColor = .black
         textView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         return textView
     }
     
-    func makeTitle() -> String {
-        var title: String
-        let start = textView.text.startIndex
-        let end = textView.text.firstIndex(of: "\n") ?? textView.text.endIndex
-        let range = start..<end
-        let mySubstring = textView.text[range]
+    func makeTitle(text: String?) -> String? {
+        var title: String?
         
-        title = String(mySubstring)
+        if let text = text {
+            let start = text.startIndex
+            let end = text.firstIndex(of: "\n") ?? text.endIndex
+            let titleSubstring = text[start..<end]
+        
+            title = String(titleSubstring)
+        }
         return title
     }
     
-    func makeDetailText() -> String {
-        let detailText: String
-        let start = textView.text.index(after: textView.text.firstIndex(of: "\n") ?? textView.text.startIndex)
-        let end = textView.text.endIndex
-        let range = start..<end
-        let mySubstring = textView.text[range]
+    func makeDetailText(text: String?) -> String? {
+        var detailText: String?
         
-        detailText = String(mySubstring)
+        if let text = text {
+            if let index = text.firstIndex(of: "\n") {
+                let startIndex = text.index(after: index)
+                let endIndex = text.endIndex
+                let detailTextSubstring = text[startIndex..<endIndex]
+                
+                detailText = String(detailTextSubstring)
+            }
+        }
         return detailText
     }
-            
-    
 }

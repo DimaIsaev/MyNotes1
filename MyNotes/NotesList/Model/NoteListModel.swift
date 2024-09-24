@@ -8,8 +8,7 @@
 import Foundation
 
 struct Note {
-    let title: String
-    let detailText: String
+    let text: String?
 }
 
 protocol NoteListModelProtocol {
@@ -25,11 +24,11 @@ final class NoteListModel {
     
     init() {
         storedNotes = [
-            Note(title: "test1", detailText: "1.01.2024"),
-            Note(title: "test2", detailText: "2.01.2024"),
-            Note(title: "test3", detailText: "3.01.2024"),
-            Note(title: "test4", detailText: "4.01.2024"),
-            Note(title: "test5", detailText: "5.01.2024")
+            Note(text: "test1\n01.01.2024"),
+            Note(text: "test2\n02.01.2024"),
+            Note(text: "test3\n03.01.2024"),
+            Note(text: "test4\n04.01.2024"),
+            Note(text: "test5\n05.01.2024")
         ]
     }
 }

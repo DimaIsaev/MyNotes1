@@ -51,7 +51,7 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
     func didSelect(noteIndex: Int) {
         let note = model.notes[noteIndex]
         self.noteIndex = noteIndex
-        let model = NoteDetailModel(storedTitle: note.title, storedDetailText: note.detailText)
+        let model = NoteDetailModel(storedText: note.text)
         let detailController = NoteDetailController(model: model)
         detailController.delegate = self
         navigationController?.pushViewController(detailController, animated: true)
@@ -62,16 +62,8 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
     
-    func editNote(note: Note) {
-        if let noteIndex = noteIndex {
-            model.deleteNote(noteIndex: noteIndex)
-        }
-        model.saveNote(note: note)
-        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
-    }
-    
     func didTapAddBtn() {
-        let model = NoteDetailModel(storedTitle: nil, storedDetailText: nil)
+        let model = NoteDetailModel(storedText: nil)
         let detailController = NoteDetailController(model: model)
         detailController.delegate = self
         navigationController?.pushViewController(detailController, animated: true)
@@ -97,15 +89,25 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
 }
 
 extension NotesListController: NoteDetailControllerDelegate {
-    func didCreate(note: Note) {
+    func didCreateNote(note: Note) {
         model.saveNote(note: note)
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
     
-    func didEdit(note: Note) {
-        editNote(note: note)
+    func didEditNote(note: Note) {
+        if let noteIndex = noteIndex {
+            model.deleteNote(noteIndex: noteIndex)
+        }
+        
+        model.saveNote(note: note)
         self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
     }
+    
+    func didDeleteNote(note: Note) {
+        model.deleteNote(noteIndex: 0)
+        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes))
+    }
+    
 }
 
 

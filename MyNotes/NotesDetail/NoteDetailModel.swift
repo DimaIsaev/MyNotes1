@@ -8,22 +8,17 @@
 import Foundation
 
 protocol NoteDetailModelProtocol {
-    var title: String? {get}
-    var detailText: String? {get}
-
+    var text: String? {get}
 }
 
 final class NoteDetailModel {
-    private var storedTitle: String?
-    private var storedDetailText: String?
+    private var storedText: String?
     
-    init(storedTitle: String?, storedDetailText: String?) {
-        self.storedTitle = storedTitle
-        self.storedDetailText = storedDetailText
+    init(storedText: String?) {
+        self.storedText = storedText
     }
 }
 
 extension NoteDetailModel: NoteDetailModelProtocol {
-    var title: String? {storedTitle}
-    var detailText: String? {storedDetailText}
+    var text: String? {storedText}
 }

@@ -12,8 +12,9 @@ protocol NoteDetailControllerProtocol: AnyObject {
 }
 
 protocol NoteDetailControllerDelegate: AnyObject {
-    func didCreate(note: Note)
-    func didEdit(note: Note)
+    func didCreateNote(note: Note)
+    func didEditNote(note: Note)
+    func didDeleteNote(note: Note)
 }
 
 final class NoteDetailController: UIViewController, NoteDetailControllerProtocol {
@@ -36,10 +37,10 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.largeTitleDisplayMode = .never
-        
+
         setupNavigationBarItem()
         setupView()
-        contentView.setText(title: model.title ?? "", detailText: model.detailText ?? "")
+        contentView.setText(text: model.text)
     }
     
     func setupView() {
@@ -63,15 +64,50 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Готово", style: .plain, target: self, action: #selector(dismissKeyboard))
         navigationItem.titleView?.tintColor = .systemOrange
     }
-    
+
     @objc func dismissKeyboard() {
         view.endEditing(true)
-        if model.title == nil, model.detailText == nil {
-            delegate?.didCreate(note: Note(title: contentView.getTitle(),
-                                           detailText: contentView.getDetailText()))
+        
+        let text = contentView.getText()
+        
+        if text != nil {
+            if model.text == nil {
+                delegate?.didCreateNote(note: Note(text: text))
+            } else if model.text != nil {
+                delegate?.didEditNote(note: Note(text: text))
+            }
         } else {
-            delegate?.didEdit(note: Note(title: contentView.getTitle(),
-                                            detailText: contentView.getDetailText()))
+            if model.text == nil {
+                delegate?.didCreateNote(note: Note(text: text))
+                delegate?.didDeleteNote(note: Note(text: text))
+            } else if model.text != nil {
+                delegate?.didEditNote(note: Note(text: text))
+                delegate?.didDeleteNote(note: Note(text: text))
+            }
+        }
+    }
+    
+    @objc func dismissKeyboard1() { //пробная
+        view.endEditing(true)
+        
+        let text = contentView.getText()
+        
+        if model.text != model.text && model.text != text {
+            if text != nil && text != model.text {
+                if model.text == nil {
+                    delegate?.didCreateNote(note: Note(text: text))
+                } else if model.text != nil {
+                    delegate?.didEditNote(note: Note(text: text))
+                }
+            } else if text == nil && text != model.text {
+                if model.text == nil {
+                    delegate?.didCreateNote(note: Note(text: text))
+                    delegate?.didDeleteNote(note: Note(text: text))
+                } else if model.text != nil {
+                    delegate?.didEditNote(note: Note(text: text))
+                    delegate?.didDeleteNote(note: Note(text: text))
+                }
+            }
         }
     }
 }
