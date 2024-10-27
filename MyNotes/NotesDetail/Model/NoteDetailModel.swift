@@ -8,23 +8,34 @@
 import Foundation
 
 protocol NoteDetailModelProtocol {
-    var text: String? { get }
+    
+    var note: Note? { get }
     var isNew: Bool { get }
+    
+    func update(note: Note)
+    
 }
 
 final class NoteDetailModel {
-    private var storedText: String?
     
-    init(storedText: String?) {
-        self.storedText = storedText
+    private var storedNote: Note?
+    
+    init(storedNote: Note?) {
+        self.storedNote = storedNote
     }
+    
 }
 
 extension NoteDetailModel: NoteDetailModelProtocol {
+    
+    var note: Note? { storedNote }
+    
     var isNew: Bool {
-        return text == nil
+        return note == nil
     }
     
-    var text: String? { storedText }
+    func update(note: Note) {
+        storedNote = note
+    }
     
 }

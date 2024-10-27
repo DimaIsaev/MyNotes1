@@ -8,13 +8,15 @@
 import UIKit
 
 protocol NotesListViewProtocol: UIView {
+    
     func update(for viewModel: NotesListView.ViewModel)
+    
 }
 
 final class NotesListView: UIView, NotesListViewProtocol {
     
     struct ViewModel {
-        let notes: [Note]
+        let notes: [Note] //если сортирую во view меняю на var
     }
     
     private lazy var tableView: UITableView = makeTableView()
@@ -33,11 +35,17 @@ final class NotesListView: UIView, NotesListViewProtocol {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    //мне кажется сортировку дожен выполнять контроллер
     func update(for viewModel: ViewModel) {
-        self.viewModel = viewModel
+//        var sortedViewModel = viewModel // может sortNotes, sortedNotes
+//        sortedViewModel.notes.sort { $0.date > $1.date }
+//
+//        self.viewModel = sortedViewModel
+        
+        self.viewModel = viewModel //сортирует controller 
         tableView.reloadData()
     }
+    
 }
 
 extension NotesListView: UITableViewDelegate, UITableViewDataSource {
@@ -59,7 +67,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        controller?.didSelect(noteIndex: indexPath.row)
+        controller?.didSelect(noteId: viewModel?.notes[indexPath.row].id)
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -68,9 +76,12 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            controller?.didDelete(noteIndex: indexPath.row)
+            if let note = viewModel?.notes[indexPath.row] {
+                controller?.didDelete(noteId: note.id)
+            }
         }
     }
+    
 }
 
 private extension NotesListView {
@@ -115,4 +126,5 @@ private extension NotesListView {
         btn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return btn
     }
+    
 }

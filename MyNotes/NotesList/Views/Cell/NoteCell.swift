@@ -24,30 +24,50 @@ final class NoteCell: UITableViewCell {
     }
     
     func configureLabels(with note: Note?) {
-        var title: String?
-        var detailText: String?
         
-        if let text = note?.text {
+        func getTitle(text: String?) -> String {
+            guard let text else {
+                return ""
+            }
             let startTitle = text.startIndex
             let endTitle = text.firstIndex(of: "\n") ?? text.endIndex
             let titleSubstring = text[startTitle..<endTitle]
             
-            title = String(titleSubstring)
+            return String(titleSubstring)
         }
         
-        if let text = note?.text {
-            if let index = text.firstIndex(of: "\n") {
-                let startDetailText = text.index(after: index)
-                let endDetailText = text.endIndex
-                let detailTextSubstring = text[startDetailText..<endDetailText]
-                
-                detailText = String(detailTextSubstring)
+        func getDetailText(text: String?) -> String {
+            guard let text, let index = text.firstIndex(of: "\n") else {
+                return ""
+            }
+            let startDetailText = text.index(after: index)
+            let endDetailText = text.endIndex
+            let detailTextSubstring = text[startDetailText..<endDetailText]
+            
+            return String(detailTextSubstring)
+        }
+
+        var title: String = getTitle(text: note?.text)
+        var detailText: String = getDetailText(text: note?.text)
+        // проверить на пробелы в строке
+        if title.isEmpty || title.allSatisfy({ $0 == " " }) {
+            if detailText.isEmpty || detailText.allSatisfy({ $0 == " " }) {
+                title = "Новая заметка"
+                detailText = "Нет дополнительного текста"
+            } else {
+                title = detailText
+                detailText = "Нет дополнительного текста"
+            }
+        } else {
+            if detailText.isEmpty || detailText.allSatisfy({ $0 == " " }) {
+                detailText = "Нет дополнительного текста"
             }
         }
-        
+
         cellTitle.text = title
         cellDetailText.text = detailText
     }
+    
 }
 
 private extension NoteCell {
@@ -78,7 +98,7 @@ private extension NoteCell {
     func makeDetailText() -> UILabel {
         let text = UILabel()
         text.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        text.textColor = .white
+        text.textColor = .systemGray
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }

@@ -12,9 +12,11 @@ protocol NoteDetailControllerProtocol: AnyObject {
 }
 
 protocol NoteDetailControllerDelegate: AnyObject {
-    func didCreateNote(note: Note)
-    func didEditNote(note: Note)
-    func didDeleteNote(note: Note)
+    
+    func didCreateNote(noteText: String) -> Note
+    func didEditNote(noteText: String, noteId: String) -> Note?
+    func didDeleteNote(noteId: String)
+    
 }
 
 final class NoteDetailController: UIViewController, NoteDetailControllerProtocol {
@@ -40,7 +42,7 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
 
         setupNavigationBarItem()
         setupView()
-        contentView.setText(text: model.text)
+        contentView.setText(text: model.note?.text)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -49,6 +51,11 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         if model.isNew {
             contentView.becomeFirstResponder()
         }
+    }
+    // Спросить у Сереги
+    func update(for model: NoteDetailModelProtocol) {
+        self.model = model
+        
     }
     
     func setupView() {
@@ -80,15 +87,25 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         
         if let text {
             if model.isNew {
-                delegate?.didCreateNote(note: Note(text: text))
+                guard let note = delegate?.didCreateNote(noteText: text) else {
+                    return
+                }
+                //оставить пустую строку? Или загоняюсь?
+                self.model.update(note: note)
             } else {
-                delegate?.didEditNote(note: Note(text: text))
+                if text != model.note?.text {
+                    guard let id = model.note?.id else { return } // guard норм? Запись норм?
+                    guard let note = delegate?.didEditNote(noteText: text, noteId: id) else { return }//дguard норм?
+                    
+                    self.model.update(note: note)
+                }
             }
         } else {
-            if !model.isNew {
-                delegate?.didDeleteNote(note: Note(text: "t")) // TODO: Удалять по id
+            if !model.isNew {//проверить
+                guard let note = model.note else { return } // guard норм?
+                delegate?.didDeleteNote(noteId: note.id)
             }
         }
     }
-    
+
 }
