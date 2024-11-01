@@ -23,7 +23,7 @@ final class NoteCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureLabels(with note: Note?) {
+    func configureLabels(with note: Note?) {//Проверить.
         
         func getTitle(text: String?) -> String {
             guard let text else {
@@ -33,7 +33,7 @@ final class NoteCell: UITableViewCell {
             let endTitle = text.firstIndex(of: "\n") ?? text.endIndex
             let titleSubstring = text[startTitle..<endTitle]
             
-            return String(titleSubstring)
+            return titleSubstring.trimmingCharacters(in: .whitespaces) // Обрезал пробелы в начале title
         }
         
         func getDetailText(text: String?) -> String {
@@ -44,14 +44,14 @@ final class NoteCell: UITableViewCell {
             let endDetailText = text.endIndex
             let detailTextSubstring = text[startDetailText..<endDetailText]
             
-            return String(detailTextSubstring)
+            return detailTextSubstring.trimmingCharacters(in: .whitespacesAndNewlines) // Обрезал пробелы и новые сторки в начале detailText
         }
-
+        
         var title: String = getTitle(text: note?.text)
         var detailText: String = getDetailText(text: note?.text)
-        // проверить на пробелы в строке
-        if title.isEmpty || title.allSatisfy({ $0 == " " }) {
-            if detailText.isEmpty || detailText.allSatisfy({ $0 == " " }) {
+        
+        if title.isEmpty {
+            if detailText.isEmpty {
                 title = "Новая заметка"
                 detailText = "Нет дополнительного текста"
             } else {
@@ -59,7 +59,7 @@ final class NoteCell: UITableViewCell {
                 detailText = "Нет дополнительного текста"
             }
         } else {
-            if detailText.isEmpty || detailText.allSatisfy({ $0 == " " }) {
+            if detailText.isEmpty {
                 detailText = "Нет дополнительного текста"
             }
         }

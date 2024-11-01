@@ -34,7 +34,7 @@ final class NoteDetailView: UIView, NoteDetailViewProtocol {
         textView.becomeFirstResponder()
     }
     
-    func getText() -> String? {
+    func getText() -> String? { /// скорее всего должно уйти в controller (пользователь закончил редактирование- держи текст)
         if textView.text.isEmpty {
             return nil
         }
@@ -199,4 +199,5 @@ private extension NoteDetailView {
 
         return detailText
     }
+    
 }

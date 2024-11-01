@@ -8,7 +8,7 @@
 import UIKit
 
 protocol NoteDetailControllerProtocol: AnyObject {
-
+    
 }
 
 protocol NoteDetailControllerDelegate: AnyObject {
@@ -52,11 +52,6 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
             contentView.becomeFirstResponder()
         }
     }
-    // Спросить у Сереги
-    func update(for model: NoteDetailModelProtocol) {
-        self.model = model
-        
-    }
     
     func setupView() {
         view.addSubview(contentView)
@@ -94,15 +89,20 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
                 self.model.update(note: note)
             } else {
                 if text != model.note?.text {
-                    guard let id = model.note?.id else { return } // guard норм? Запись норм?
-                    guard let note = delegate?.didEditNote(noteText: text, noteId: id) else { return }//дguard норм?
-                    
+                    guard let id = model.note?.id else {
+                        return
+                    } // guard норм?
+                    guard let note = delegate?.didEditNote(noteText: text, noteId: id) else {
+                        return
+                    }//guard норм?
                     self.model.update(note: note)
                 }
             }
         } else {
             if !model.isNew {//проверить
-                guard let note = model.note else { return } // guard норм?
+                guard let note = model.note else {
+                    return
+                } // guard норм?
                 delegate?.didDeleteNote(noteId: note.id)
             }
         }

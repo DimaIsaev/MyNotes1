@@ -9,9 +9,10 @@ import UIKit
 
 protocol NotesListControllerProtocol: AnyObject {
 
-    func didSelect(noteId: String?) //уйти от опционала?
+    func didSelect(noteId: String) //ушел от опционала
     func didDelete(noteId: String)
     func didTapAddBtn()
+    func didUpdate(notes: [Note])
     
 }
 
@@ -25,7 +26,7 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -35,8 +36,7 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         setupNavigationController()
         setupView()
         
-//        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes)) // сортирует view
-        sortNotes() // сортирует контроллер
+        contentView.update(for: NotesListView.ViewModel(notes: sortNotes(notes: model.notes)))
     }
     
     func setupView() {
@@ -49,15 +49,13 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
-    //этот вариант если сортировать заметки должен controller а не view
-    func sortNotes() { //может sortedNotes
-        let sortedNotes = model.notes.sorted { $0.date > $1.date }
-
-        self.contentView.update(for: NotesListView.ViewModel(notes: sortedNotes))
-
+    
+    func sortNotes(notes: [Note]) -> [Note] { //может sortedNotes// Проверить
+        let sortedNotes = notes.sorted { $0.date > $1.date }
+        return sortedNotes
     }
     // проверить это новый переход на заметку по ID
-    func didSelect(noteId: String?) { //уйти от опционала?
+    func didSelect(noteId: String) { //ушел от опционала
         for note in model.notes {
             if noteId == note.id {
                 let model = NoteDetailModel(storedNote: note)
@@ -71,8 +69,6 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
     
     func didDelete(noteId: String) {
         model.deleteNote(noteId: noteId)
-//        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes)) // сортирует view
-        sortNotes() // сортирует контроллер
     }
     
     func didTapAddBtn() {
@@ -80,6 +76,11 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         let detailController = NoteDetailController(model: model)
         detailController.delegate = self
         navigationController?.pushViewController(detailController, animated: true)
+    }
+    
+    func didUpdate(notes: [Note]) { // Проверить
+        let sortedNote = sortNotes(notes: notes)
+        contentView.update(for: NotesListView.ViewModel(notes: sortedNote))
     }
     
     private func makeContentView() -> NotesListViewProtocol {
@@ -106,24 +107,16 @@ extension NotesListController: NoteDetailControllerDelegate {
 
     func didCreateNote(noteText: String) -> Note {
         let note = model.saveNote(text: noteText)
-//        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes)) // сортирует view
-        sortNotes() // сортирует контроллер
         return note
     }
     
     func didEditNote(noteText: String, noteId: String) -> Note? { //Возвращаю опционал? Прошлось добавить так как model.editNote возвращает опционал
-       let note = model.editNote(text: noteText, noteId: noteId)
-        
-//        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes)) // сортирует view
-        sortNotes() // сортирует контроллер
+        let note = model.editNote(text: noteText, noteId: noteId)
         return note
     }
-    //шлак тут
+
     func didDeleteNote(noteId: String) { //раньше тут получал не noteId,а note(полную заметку)
         model.deleteNote(noteId: noteId)
-        
-//        self.contentView.update(for: NotesListView.ViewModel(notes: model.notes)) // сортирует view
-        sortNotes() // сортирует контроллер
     }
     
 }

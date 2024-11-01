@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let model = NoteListModel()
         
         let vs = NotesListController(model: model)
+        model.controller = vs //добавил. Точно тут? порядок, запись?
         let nav = UINavigationController(rootViewController: vs)
         
         window.rootViewController = nav

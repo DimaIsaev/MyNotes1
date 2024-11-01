@@ -18,7 +18,13 @@ protocol NoteListModelProtocol {
 
 final class NoteListModel {
     
-    private var storedNotes: [Note]
+    weak var controller: NotesListControllerProtocol? //weak? добавил controller
+    
+    private var storedNotes: [Note] { // добавил didSet обсудить, посмотреть
+        didSet {
+            controller?.didUpdate(notes: storedNotes)
+        }
+    }
     
     init() {
         storedNotes = [
@@ -32,6 +38,7 @@ final class NoteListModel {
             Note(text: "test5\ndetail1", id: UUID().uuidString)
         ]
     }
+
 }
 
 extension NoteListModel: NoteListModelProtocol {
@@ -60,7 +67,7 @@ extension NoteListModel: NoteListModelProtocol {
             if noteId == note.id {
                 storedNotes[index].text = text //поменял на var в структуре
                 storedNotes[index].date = Date() // дату тут новую устанавливаю?
-                return storedNotes[index]
+                return storedNotes[index] /// может вернут note?
             }
         }
         return nil

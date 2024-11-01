@@ -16,7 +16,7 @@ protocol NotesListViewProtocol: UIView {
 final class NotesListView: UIView, NotesListViewProtocol {
     
     struct ViewModel {
-        let notes: [Note] //если сортирую во view меняю на var
+        let notes: [Note]
     }
     
     private lazy var tableView: UITableView = makeTableView()
@@ -35,14 +35,9 @@ final class NotesListView: UIView, NotesListViewProtocol {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    //мне кажется сортировку дожен выполнять контроллер
+
     func update(for viewModel: ViewModel) {
-//        var sortedViewModel = viewModel // может sortNotes, sortedNotes
-//        sortedViewModel.notes.sort { $0.date > $1.date }
-//
-//        self.viewModel = sortedViewModel
-        
-        self.viewModel = viewModel //сортирует controller 
+        self.viewModel = viewModel
         tableView.reloadData()
     }
     
@@ -67,7 +62,10 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        controller?.didSelect(noteId: viewModel?.notes[indexPath.row].id)
+        guard let id = viewModel?.notes[indexPath.row].id else { // guard норм? сделал для ухода от опционала в функции didSelect
+            return
+        }
+        controller?.didSelect(noteId: id) // раньше возвращал index
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -77,7 +75,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             if let note = viewModel?.notes[indexPath.row] {
-                controller?.didDelete(noteId: note.id)
+                controller?.didDelete(noteId: note.id) //раньше удалял по index
             }
         }
     }
