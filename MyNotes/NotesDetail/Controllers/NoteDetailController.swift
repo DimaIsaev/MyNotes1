@@ -9,18 +9,20 @@ import UIKit
 
 protocol NoteDetailControllerProtocol: AnyObject {
     
+    func didChange(text: String)
+    func didBeginEditing(with text: String)
+    func didUpdate(note: Note)
+    
 }
 
 protocol NoteDetailControllerDelegate: AnyObject {
     
-    func didCreateNote(noteText: String) -> Note
-    func didEditNote(noteText: String, noteId: String) -> Note?
-    func didDeleteNote(noteId: String)
+    func didSaveNote(note: Note)
     
 }
 
-final class NoteDetailController: UIViewController, NoteDetailControllerProtocol {
-
+final class NoteDetailController: UIViewController {
+    
     private lazy var contentView: NoteDetailViewProtocol = makeContentView()
     
     weak var delegate: NoteDetailControllerDelegate?
@@ -39,9 +41,8 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.largeTitleDisplayMode = .never
-
-        setupNavigationBarItem()
         setupView()
+        
         contentView.setText(text: model.note?.text)
     }
     
@@ -74,38 +75,33 @@ final class NoteDetailController: UIViewController, NoteDetailControllerProtocol
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Готово", style: .plain, target: self, action: #selector(dismissKeyboard))
         navigationItem.titleView?.tintColor = .systemOrange
     }
-
+    
     @objc func dismissKeyboard() {
         view.endEditing(true)
-        
-        let text = contentView.getText()
-        
-        if let text {
-            if model.isNew {
-                guard let note = delegate?.didCreateNote(noteText: text) else {
-                    return
-                }
-                //оставить пустую строку? Или загоняюсь?
-                self.model.update(note: note)
-            } else {
-                if text != model.note?.text {
-                    guard let id = model.note?.id else {
-                        return
-                    } // guard норм?
-                    guard let note = delegate?.didEditNote(noteText: text, noteId: id) else {
-                        return
-                    }//guard норм?
-                    self.model.update(note: note)
-                }
-            }
-        } else {
-            if !model.isNew {//проверить
-                guard let note = model.note else {
-                    return
-                } // guard норм?
-                delegate?.didDeleteNote(noteId: note.id)
-            }
+    }
+    
+}
+
+// MARK: - Протокол контроллера
+
+extension NoteDetailController: NoteDetailControllerProtocol {
+    
+    func didChange(text: String) {
+        if !model.isNew {
+            model.editNote(text: text)
         }
     }
-
+    
+    func didBeginEditing(with text: String) {
+        setupNavigationBarItem()
+        
+        if model.isNew {
+            model.createNote(text: text)
+        }
+    }
+    
+    func didUpdate(note: Note) {
+        delegate?.didSaveNote(note: note)
+    }
+    
 }

@@ -8,19 +8,19 @@
 import Foundation
 
 protocol NoteListModelProtocol {
+    
     var notes: [Note] { get }
     
-    func saveNote(text: String) -> Note
+    func saveNote(note: Note)
     func deleteNote(noteId: String)
-    func editNote(text: String, noteId: String) -> Note? //нужно возвращать?
-
+    
 }
 
 final class NoteListModel {
     
-    weak var controller: NotesListControllerProtocol? //weak? добавил controller
+    weak var controller: NotesListControllerProtocol?
     
-    private var storedNotes: [Note] { // добавил didSet обсудить, посмотреть
+    private var storedNotes: [Note] {
         didSet {
             controller?.didUpdate(notes: storedNotes)
         }
@@ -28,18 +28,20 @@ final class NoteListModel {
     
     init() {
         storedNotes = [
-            Note(text: "title", id: UUID().uuidString),
-            Note(text: "titleN\n", id: UUID().uuidString),
-            Note(text: "\ndetaiText", id: UUID().uuidString),
-            Note(text: "test1\ndetail", id: UUID().uuidString),
-            Note(text: "test2\ndetail4", id: UUID().uuidString),
-            Note(text: "test3\ndetail3", id: UUID().uuidString),
-            Note(text: "test4\ndetail2", id: UUID().uuidString),
-            Note(text: "test5\ndetail1", id: UUID().uuidString)
+            //            Note(text: "title", id: UUID().uuidString),
+            //            Note(text: "titleN\n", id: UUID().uuidString),
+            //            Note(text: "\ndetaiText", id: UUID().uuidString),
+            //            Note(text: "test1\ndetail", id: UUID().uuidString),
+            //            Note(text: "test2\ndetail4", id: UUID().uuidString),
+            //            Note(text: "test3\ndetail3", id: UUID().uuidString),
+            //            Note(text: "test4\ndetail2", id: UUID().uuidString),
+            //            Note(text: "test5\ndetail1", id: UUID().uuidString)
         ]
     }
-
+    
 }
+
+//MARK: - Протокол модели
 
 extension NoteListModel: NoteListModelProtocol {
     
@@ -47,10 +49,14 @@ extension NoteListModel: NoteListModelProtocol {
         storedNotes
     }
     
-    func saveNote(text: String) -> Note {
-        let note = Note(text: text, id: UUID().uuidString)
+    func saveNote(note: Note) {
+        for (index, storedNote) in storedNotes.enumerated() {
+            if storedNote.id == note.id {
+                storedNotes[index] = note
+                return
+            }
+        }
         storedNotes.append(note)
-        return note
     }
     
     func deleteNote(noteId: String) {
@@ -61,16 +67,5 @@ extension NoteListModel: NoteListModelProtocol {
             }
         }
     }
-
-    func editNote(text: String, noteId: String) -> Note? { //Возвращаю опционал? Проверить функцию еще раз
-        for (index, note) in storedNotes.enumerated() {
-            if noteId == note.id {
-                storedNotes[index].text = text //поменял на var в структуре
-                storedNotes[index].date = Date() // дату тут новую устанавливаю?
-                return storedNotes[index] /// может вернут note?
-            }
-        }
-        return nil
-    }
-
+    
 }

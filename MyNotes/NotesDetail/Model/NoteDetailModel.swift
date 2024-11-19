@@ -12,19 +12,28 @@ protocol NoteDetailModelProtocol {
     var note: Note? { get }
     var isNew: Bool { get }
     
-    func update(note: Note)
+    func createNote(text: String)
+    func editNote(text: String)
     
 }
 
 final class NoteDetailModel {
     
-    private var storedNote: Note?
+    weak var controller: NoteDetailControllerProtocol?
+    
+    private var storedNote: Note? {
+        didSet {
+            controller?.didUpdate(note: storedNote!)//тут
+        }
+    }
     
     init(storedNote: Note?) {
         self.storedNote = storedNote
     }
     
 }
+
+//MARK: - Протокол модели
 
 extension NoteDetailModel: NoteDetailModelProtocol {
     
@@ -34,8 +43,16 @@ extension NoteDetailModel: NoteDetailModelProtocol {
         return note == nil
     }
     
-    func update(note: Note) {
+    func createNote(text: String) {
+        let note = Note(text: text, id: UUID().uuidString, date: Date())
         storedNote = note
+    }
+    
+    func editNote(text: String) {
+        var editedNote = storedNote
+        editedNote?.text = text
+        editedNote?.date = Date()
+        storedNote = editedNote
     }
     
 }

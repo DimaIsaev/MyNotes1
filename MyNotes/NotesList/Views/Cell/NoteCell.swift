@@ -23,7 +23,7 @@ final class NoteCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureLabels(with note: Note?) {//Проверить.
+    func configureLabels(with note: Note?) {
         
         func getTitle(text: String?) -> String {
             guard let text else {
@@ -33,7 +33,7 @@ final class NoteCell: UITableViewCell {
             let endTitle = text.firstIndex(of: "\n") ?? text.endIndex
             let titleSubstring = text[startTitle..<endTitle]
             
-            return titleSubstring.trimmingCharacters(in: .whitespaces) // Обрезал пробелы в начале title
+            return titleSubstring.trimmingCharacters(in: .whitespaces)
         }
         
         func getDetailText(text: String?) -> String {
@@ -44,7 +44,7 @@ final class NoteCell: UITableViewCell {
             let endDetailText = text.endIndex
             let detailTextSubstring = text[startDetailText..<endDetailText]
             
-            return detailTextSubstring.trimmingCharacters(in: .whitespacesAndNewlines) // Обрезал пробелы и новые сторки в начале detailText
+            return detailTextSubstring.trimmingCharacters(in: .whitespacesAndNewlines)
         }
         
         var title: String = getTitle(text: note?.text)
@@ -63,12 +63,14 @@ final class NoteCell: UITableViewCell {
                 detailText = "Нет дополнительного текста"
             }
         }
-
+        
         cellTitle.text = title
         cellDetailText.text = detailText
     }
     
 }
+
+// MARK: - UI Elements
 
 private extension NoteCell {
     
@@ -102,5 +104,5 @@ private extension NoteCell {
         text.translatesAutoresizingMaskIntoConstraints = false
         return text
     }
-
+    
 }

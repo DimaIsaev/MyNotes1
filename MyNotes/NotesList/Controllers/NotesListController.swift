@@ -8,20 +8,20 @@
 import UIKit
 
 protocol NotesListControllerProtocol: AnyObject {
-
-    func didSelect(noteId: String) //ушел от опционала
+    
+    func didSelect(noteId: String)
     func didDelete(noteId: String)
     func didTapAddBtn()
     func didUpdate(notes: [Note])
     
 }
 
-final class NotesListController: UIViewController, NotesListControllerProtocol {
+final class NotesListController: UIViewController {
     
     private lazy var contentView: NotesListViewProtocol = makeContentView()
     
     private let model: NoteListModelProtocol
-
+    
     init(model: NoteListModelProtocol) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
@@ -39,6 +39,11 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         contentView.update(for: NotesListView.ViewModel(notes: sortNotes(notes: model.notes)))
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        removeNoteIfEmpty()
+    }
+    
     func setupView() {
         view.addSubview(contentView)
         
@@ -50,37 +55,20 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         ])
     }
     
-    func sortNotes(notes: [Note]) -> [Note] { //может sortedNotes// Проверить
+    func sortNotes(notes: [Note]) -> [Note] {
         let sortedNotes = notes.sorted { $0.date > $1.date }
         return sortedNotes
     }
-    // проверить это новый переход на заметку по ID
-    func didSelect(noteId: String) { //ушел от опционала
-        for note in model.notes {
-            if noteId == note.id {
-                let model = NoteDetailModel(storedNote: note)
-                let detailController = NoteDetailController(model: model)
-                detailController.delegate = self
-                navigationController?.pushViewController(detailController, animated: true)
-                return
-            }
+    
+    func removeNoteIfEmpty () {
+        let sortedNotes = sortNotes(notes: model.notes)
+        guard let firstNote = sortedNotes.first else {
+            return
         }
-    }
-    
-    func didDelete(noteId: String) {
-        model.deleteNote(noteId: noteId)
-    }
-    
-    func didTapAddBtn() {
-        let model = NoteDetailModel(storedNote: nil)
-        let detailController = NoteDetailController(model: model)
-        detailController.delegate = self
-        navigationController?.pushViewController(detailController, animated: true)
-    }
-    
-    func didUpdate(notes: [Note]) { // Проверить
-        let sortedNote = sortNotes(notes: notes)
-        contentView.update(for: NotesListView.ViewModel(notes: sortedNote))
+        
+        if firstNote.text.isEmpty {
+            model.deleteNote(noteId: firstNote.id)
+        }
     }
     
     private func makeContentView() -> NotesListViewProtocol {
@@ -88,7 +76,7 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }
-
+    
     private func setupNavigationController() {
         title = "Заметки"
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
@@ -103,20 +91,48 @@ final class NotesListController: UIViewController, NotesListControllerProtocol {
     
 }
 
-extension NotesListController: NoteDetailControllerDelegate {
+// MARK: - Протокол контроллера
 
-    func didCreateNote(noteText: String) -> Note {
-        let note = model.saveNote(text: noteText)
-        return note
+extension NotesListController: NotesListControllerProtocol {
+    
+    func didSelect(noteId: String) {
+        for note in model.notes {
+            if noteId == note.id {
+                let model = NoteDetailModel(storedNote: note)
+                let detailController = NoteDetailController(model: model)
+                model.controller = detailController
+                detailController.delegate = self
+                navigationController?.pushViewController(detailController, animated: true)
+                return
+            }
+        }
     }
     
-    func didEditNote(noteText: String, noteId: String) -> Note? { //Возвращаю опционал? Прошлось добавить так как model.editNote возвращает опционал
-        let note = model.editNote(text: noteText, noteId: noteId)
-        return note
-    }
-
-    func didDeleteNote(noteId: String) { //раньше тут получал не noteId,а note(полную заметку)
+    func didDelete(noteId: String) {
         model.deleteNote(noteId: noteId)
+    }
+    
+    func didTapAddBtn() {
+        let model = NoteDetailModel(storedNote: nil)
+        let detailController = NoteDetailController(model: model)
+        model.controller = detailController
+        detailController.delegate = self
+        navigationController?.pushViewController(detailController, animated: true)
+    }
+    
+    func didUpdate(notes: [Note]) {
+        let sortedNote = sortNotes(notes: notes)
+        contentView.update(for: NotesListView.ViewModel(notes: sortedNote))
+    }
+    
+}
+
+// MARK: - Delegated methods
+
+extension NotesListController: NoteDetailControllerDelegate {
+    
+    func didSaveNote(note: Note) {
+        model.saveNote(note: note)
     }
     
 }

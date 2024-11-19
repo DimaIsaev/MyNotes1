@@ -8,7 +8,7 @@
 import Foundation
 
 struct Note {
-    var text: String // для изменения текста указал var (для функции edit)
+    var text: String
     let id: String
-    var date = Date() //добавил дату, var что бы менять при редактировании заметки дату
+    var date: Date
 }

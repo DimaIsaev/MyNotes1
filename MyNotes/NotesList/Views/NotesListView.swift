@@ -13,7 +13,7 @@ protocol NotesListViewProtocol: UIView {
     
 }
 
-final class NotesListView: UIView, NotesListViewProtocol {
+final class NotesListView: UIView {
     
     struct ViewModel {
         let notes: [Note]
@@ -26,7 +26,7 @@ final class NotesListView: UIView, NotesListViewProtocol {
     
     weak var controller: NotesListControllerProtocol?
     
-    init(controller: NotesListControllerProtocol) { // можно засетить в свойство(property)
+    init(controller: NotesListControllerProtocol) {
         self.controller = controller
         super.init(frame: .zero)
         setupLayout()
@@ -35,17 +35,12 @@ final class NotesListView: UIView, NotesListViewProtocol {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func update(for viewModel: ViewModel) {
-        self.viewModel = viewModel
-        tableView.reloadData()
-    }
     
 }
 
+// MARK: - TableView Methods
+
 extension NotesListView: UITableViewDelegate, UITableViewDataSource {
-    
-    //    MARK: - TableView Methods
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel?.notes.count ?? 0
@@ -62,10 +57,10 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let id = viewModel?.notes[indexPath.row].id else { // guard норм? сделал для ухода от опционала в функции didSelect
+        guard let id = viewModel?.notes[indexPath.row].id else {
             return
         }
-        controller?.didSelect(noteId: id) // раньше возвращал index
+        controller?.didSelect(noteId: id)
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -74,13 +69,30 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            if let note = viewModel?.notes[indexPath.row] {
-                controller?.didDelete(noteId: note.id) //раньше удалял по index
+            //            if let note = viewModel?.notes[indexPath.row] {
+            //                controller?.didDelete(noteId: note.id)
+            //            }
+            guard let id = viewModel?.notes[indexPath.row].id else {
+                return
             }
+            controller?.didDelete(noteId: id)
         }
     }
     
 }
+
+// MARK: - Протокол View
+
+extension NotesListView: NotesListViewProtocol {
+    
+    func update(for viewModel: ViewModel) {
+        self.viewModel = viewModel
+        tableView.reloadData()
+    }
+    
+}
+
+// MARK: - UI Elements
 
 private extension NotesListView {
     
