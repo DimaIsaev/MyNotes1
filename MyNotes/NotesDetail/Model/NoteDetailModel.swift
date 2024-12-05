@@ -21,7 +21,7 @@ final class NoteDetailModel {
     
     weak var controller: NoteDetailControllerProtocol?
     
-    private var storedNote: Note? {
+    public var storedNote: Note? {
         didSet {
             controller?.didUpdate(note: storedNote!)//тут
         }

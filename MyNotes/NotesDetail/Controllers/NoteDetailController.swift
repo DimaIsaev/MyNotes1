@@ -27,7 +27,7 @@ final class NoteDetailController: UIViewController {
     
     weak var delegate: NoteDetailControllerDelegate?
     
-    var model: NoteDetailModelProtocol
+    private var model: NoteDetailModelProtocol // private?
     
     init(model: NoteDetailModelProtocol) {
         self.model = model
@@ -54,6 +54,12 @@ final class NoteDetailController: UIViewController {
         }
     }
     
+}
+
+// MARK: - UI Elements
+
+private extension NoteDetailController { //private?
+    
     func setupView() {
         view.addSubview(contentView)
         
@@ -71,7 +77,7 @@ final class NoteDetailController: UIViewController {
         return view
     }
     
-    private func setupNavigationBarItem() {
+    func setupNavigationBarItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Готово", style: .plain, target: self, action: #selector(dismissKeyboard))
         navigationItem.titleView?.tintColor = .systemOrange
     }

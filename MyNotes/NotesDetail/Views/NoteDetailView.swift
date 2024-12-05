@@ -14,10 +14,10 @@ protocol NoteDetailViewProtocol: UIView {
 }
 
 final class NoteDetailView: UIView {
-    
+    private var number2 = 2
     private lazy var textView: UITextView = makeTextView()
     
-    var controller: NoteDetailControllerProtocol
+    private var controller: NoteDetailControllerProtocol // private?
     
     init(controller: NoteDetailControllerProtocol) {
         self.controller = controller

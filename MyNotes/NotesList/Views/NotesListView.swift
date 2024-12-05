@@ -22,9 +22,9 @@ final class NotesListView: UIView {
     private lazy var tableView: UITableView = makeTableView()
     private lazy var addButton: UIButton = makeAddButton()
     
-    var viewModel: ViewModel?
+    private var viewModel: ViewModel? // private?
     
-    weak var controller: NotesListControllerProtocol?
+    private weak var controller: NotesListControllerProtocol? // private?
     
     init(controller: NotesListControllerProtocol) {
         self.controller = controller
@@ -57,10 +57,10 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let id = viewModel?.notes[indexPath.row].id else {
-            return
+        if let id = viewModel?.notes[indexPath.row].id {
+            controller?.didSelect(noteId: id)
         }
-        controller?.didSelect(noteId: id)
+        
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -69,13 +69,9 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            //            if let note = viewModel?.notes[indexPath.row] {
-            //                controller?.didDelete(noteId: note.id)
-            //            }
-            guard let id = viewModel?.notes[indexPath.row].id else {
-                return
+            if let id = viewModel?.notes[indexPath.row].id {
+                controller?.didDelete(noteId: id)
             }
-            controller?.didDelete(noteId: id)
         }
     }
     

@@ -20,7 +20,7 @@ final class NotesListController: UIViewController {
     
     private lazy var contentView: NotesListViewProtocol = makeContentView()
     
-    private let model: NoteListModelProtocol
+    private let model: NoteListModelProtocol // private?
     
     init(model: NoteListModelProtocol) {
         self.model = model
@@ -44,6 +44,28 @@ final class NotesListController: UIViewController {
         removeNoteIfEmpty()
     }
     
+    private func sortNotes(notes: [Note]) -> [Note] { // private?
+        let sortedNotes = notes.sorted { $0.date > $1.date }
+        return sortedNotes
+    }
+    
+    private func removeNoteIfEmpty () { // private?
+        let sortedNotes = sortNotes(notes: model.notes)
+        guard let firstNote = sortedNotes.first else {
+            return
+        }
+        
+        if firstNote.text.isEmpty {
+            model.deleteNote(noteId: firstNote.id)
+        }
+    }
+    
+}
+
+// MARK: - UI Elements
+
+private extension NotesListController {// private?
+    
     func setupView() {
         view.addSubview(contentView)
         
@@ -55,29 +77,13 @@ final class NotesListController: UIViewController {
         ])
     }
     
-    func sortNotes(notes: [Note]) -> [Note] {
-        let sortedNotes = notes.sorted { $0.date > $1.date }
-        return sortedNotes
-    }
-    
-    func removeNoteIfEmpty () {
-        let sortedNotes = sortNotes(notes: model.notes)
-        guard let firstNote = sortedNotes.first else {
-            return
-        }
-        
-        if firstNote.text.isEmpty {
-            model.deleteNote(noteId: firstNote.id)
-        }
-    }
-    
-    private func makeContentView() -> NotesListViewProtocol {
+    func makeContentView() -> NotesListViewProtocol {
         let view = NotesListView(controller: self)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }
     
-    private func setupNavigationController() {
+    func setupNavigationController() {
         title = "Заметки"
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         navigationController?.navigationBar.tintColor = .systemOrange
