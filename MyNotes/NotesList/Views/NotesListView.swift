@@ -58,7 +58,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let id = viewModel?.notes[indexPath.row].id {
-            controller?.didSelect(noteId: id)
+            controller?.didSelectNote(with: id)
         }
         
     }
@@ -70,7 +70,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             if let id = viewModel?.notes[indexPath.row].id {
-                controller?.didDelete(noteId: id)
+                controller?.didDeleteNote(with: id)
             }
         }
     }

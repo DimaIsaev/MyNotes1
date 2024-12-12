@@ -10,14 +10,14 @@ import UIKit
 protocol NoteDetailControllerProtocol: AnyObject {
     
     func didChange(text: String)
-    func didBeginEditing(with text: String)
-    func didUpdate(note: Note)
+    func didBeginEditing() //eбрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
     
 }
 
 protocol NoteDetailControllerDelegate: AnyObject {
     
-    func didSaveNote(note: Note)
+    func didCreateNote() -> Note
+    func didEditNote(with id: String, text: String) -> Note?
     
 }
 
@@ -94,20 +94,19 @@ extension NoteDetailController: NoteDetailControllerProtocol {
     
     func didChange(text: String) {
         if !model.isNew {
-            model.editNote(text: text)
+            guard let id = model.note?.id,
+                  let note = delegate?.didEditNote(with: id, text: text) else { return }
+            model.update(note: note)
         }
     }
     
-    func didBeginEditing(with text: String) {
+    func didBeginEditing() { //убрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
         setupNavigationBarItem()
         
         if model.isNew {
-            model.createNote(text: text)
+            guard let note = delegate?.didCreateNote() else { return }
+            model.update(note: note)
         }
-    }
-    
-    func didUpdate(note: Note) {
-        delegate?.didSaveNote(note: note)
     }
     
 }

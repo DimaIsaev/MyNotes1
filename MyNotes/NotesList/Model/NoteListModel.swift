@@ -11,8 +11,9 @@ protocol NoteListModelProtocol {
     
     var notes: [Note] { get }
     
-    func saveNote(note: Note)
-    func deleteNote(noteId: String)
+    func createNote() -> Note
+    func deleteNote(with id: String)
+    func updateNote(with id: String, newText: String) -> Note?
     
 }
 
@@ -22,21 +23,12 @@ final class NoteListModel {
     
     private var storedNotes: [Note] {
         didSet {
-            controller?.didUpdate(notes: storedNotes)
+            controller?.didUpdate()
         }
     }
     
     init() {
-        storedNotes = [
-            //            Note(text: "title", id: UUID().uuidString),
-            //            Note(text: "titleN\n", id: UUID().uuidString),
-            //            Note(text: "\ndetaiText", id: UUID().uuidString),
-            //            Note(text: "test1\ndetail", id: UUID().uuidString),
-            //            Note(text: "test2\ndetail4", id: UUID().uuidString),
-            //            Note(text: "test3\ndetail3", id: UUID().uuidString),
-            //            Note(text: "test4\ndetail2", id: UUID().uuidString),
-            //            Note(text: "test5\ndetail1", id: UUID().uuidString)
-        ]
+        storedNotes = []
     }
     
 }
@@ -49,23 +41,32 @@ extension NoteListModel: NoteListModelProtocol {
         storedNotes
     }
     
-    func saveNote(note: Note) {
-        for (index, storedNote) in storedNotes.enumerated() {
-            if storedNote.id == note.id {
-                storedNotes[index] = note
-                return
-            }
-        }
+    func createNote() -> Note {//тест не принимает, сохранение и так совершалось на моменте пустой строки.
+        let note = Note(text: "", id: UUID().uuidString, date: Date())// Создает теперь заметку с пустой строкой.
         storedNotes.append(note)
+        return note
     }
     
-    func deleteNote(noteId: String) {
+    func deleteNote(with id: String) {
         for (index, note) in storedNotes.enumerated() {
-            if noteId == note.id {
+            if id == note.id {
                 storedNotes.remove(at: index)
                 return
             }
         }
+    }
+    
+    func updateNote(with id: String, newText: String) -> Note? {
+        for (index, note) in storedNotes.enumerated() {
+            if id == note.id {
+                var note = storedNotes[index]
+                note.text = newText
+                note.date = Date()
+                storedNotes[index] = note
+                return storedNotes[index]
+            }
+        }
+        return nil
     }
     
 }

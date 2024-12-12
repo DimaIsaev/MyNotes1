@@ -12,8 +12,7 @@ protocol NoteDetailModelProtocol {
     var note: Note? { get }
     var isNew: Bool { get }
     
-    func createNote(text: String)
-    func editNote(text: String)
+    func update(note: Note)
     
 }
 
@@ -21,11 +20,7 @@ final class NoteDetailModel {
     
     weak var controller: NoteDetailControllerProtocol?
     
-    public var storedNote: Note? {
-        didSet {
-            controller?.didUpdate(note: storedNote!)//тут
-        }
-    }
+    public var storedNote: Note?
     
     init(storedNote: Note?) {
         self.storedNote = storedNote
@@ -43,16 +38,8 @@ extension NoteDetailModel: NoteDetailModelProtocol {
         return note == nil
     }
     
-    func createNote(text: String) {
-        let note = Note(text: text, id: UUID().uuidString, date: Date())
+    func update(note: Note) {
         storedNote = note
-    }
-    
-    func editNote(text: String) {
-        var editedNote = storedNote
-        editedNote?.text = text
-        editedNote?.date = Date()
-        storedNote = editedNote
     }
     
 }

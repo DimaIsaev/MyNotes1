@@ -14,7 +14,7 @@ protocol NoteDetailViewProtocol: UIView {
 }
 
 final class NoteDetailView: UIView {
-    private var number2 = 2
+    
     private lazy var textView: UITextView = makeTextView()
     
     private var controller: NoteDetailControllerProtocol // private?
@@ -65,8 +65,8 @@ extension NoteDetailView: UITextViewDelegate {
         controller.didChange(text: textView.text)
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        controller.didBeginEditing(with: textView.text)
+    func textViewDidBeginEditing(_ textView: UITextView) {// Почему вызывается 2 раза?
+        controller.didBeginEditing() //убрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
     }
     
 }
