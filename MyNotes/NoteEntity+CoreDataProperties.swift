@@ -10,17 +10,17 @@ import Foundation
 import CoreData
 
 extension NoteEntity {
-
+    
     @nonobjc public class func fetchRequest() -> NSFetchRequest<NoteEntity> {
         return NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
     }
-
+    
     @NSManaged public var text: String
     @NSManaged public var date: Date
-    @NSManaged public var id: String // let?
-
+    @NSManaged public var id: String
+    
 }
 
 extension NoteEntity : Identifiable {
-
+    
 }

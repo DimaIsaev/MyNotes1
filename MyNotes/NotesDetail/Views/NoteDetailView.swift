@@ -11,6 +11,9 @@ protocol NoteDetailViewProtocol: UIView {
     
     func setText(text: String?)
     
+    func startTextViewListening()
+    func stopTextViewListening()
+    
 }
 
 final class NoteDetailView: UIView {
@@ -65,8 +68,8 @@ extension NoteDetailView: UITextViewDelegate {
         controller.didChange(text: textView.text)
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView) {// Почему вызывается 2 раза?
-        controller.didBeginEditing() //убрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        controller.didBeginEditing()
     }
     
 }
@@ -92,6 +95,14 @@ extension NoteDetailView: NoteDetailViewProtocol {
         textView.attributedText = textCombination
     }
     
+    func startTextViewListening() {
+        textView.delegate = self
+    }
+    
+    func stopTextViewListening() {
+        textView.delegate = nil
+    }
+    
 }
 
 // MARK: - UI Elements
@@ -112,7 +123,6 @@ private extension NoteDetailView {
     func makeTextView() -> UITextView {
         let textView = UITextView()
         textView.backgroundColor = .black
-        textView.delegate = self
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.autocorrectionType = .no
         

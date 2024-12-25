@@ -16,8 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let model = NoteListModel()// модель с массивом в памяти
-//        let model = NoteListCoreDataModel() // модель с CoreData
+//        let model = NoteListModel()// модель с массивом в памяти
+        let model = NoteListCoreDataModel() // модель с CoreData
         
         let vs = NotesListController(model: model)
         model.controller = vs //добавил. Точно тут? порядок, запись?

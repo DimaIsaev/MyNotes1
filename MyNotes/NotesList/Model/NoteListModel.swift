@@ -7,16 +7,6 @@
 
 import Foundation
 
-protocol NoteListModelProtocol {
-    
-    var notes: [Note] { get }
-    
-    func createNote() -> Note
-    func deleteNote(with id: String)
-    func updateNote(with id: String, newText: String) -> Note?
-    
-}
-
 final class NoteListModel {
     
     weak var controller: NotesListControllerProtocol?
@@ -41,8 +31,8 @@ extension NoteListModel: NoteListModelProtocol {
         storedNotes
     }
     
-    func createNote() -> Note {//тест не принимает, сохранение и так совершалось на моменте пустой строки.
-        let note = Note(text: "", id: UUID().uuidString, date: Date())// Создает теперь заметку с пустой строкой.
+    func createNote() -> Note {
+        let note = Note(text: "", id: UUID().uuidString, date: Date())
         storedNotes.append(note)
         return note
     }

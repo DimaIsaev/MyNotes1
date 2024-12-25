@@ -9,10 +9,15 @@ import UIKit
 
 protocol NotesListControllerProtocol: AnyObject {
     
-    func didSelectNote(with id: String)
-    func didDeleteNote(with id: String)
-    func didTapAddBtn()
     func didUpdate()
+    
+}
+
+protocol NotesListViewInteractionProtocol: AnyObject {
+    
+    func didSelectNote(with id: String)
+    func didTapOnDeleteNote(with id: String)
+    func didTapAddBtn()
     
 }
 
@@ -44,28 +49,11 @@ final class NotesListController: UIViewController {
         removeNoteIfEmpty()
     }
     
-    private func sortNotes() -> [Note] { // private?
-        let notes = model.notes
-        let sortedNotes = notes.sorted { $0.date > $1.date }
-        return sortedNotes
-    }
-    
-    private func removeNoteIfEmpty () { // private?
-        let sortedNotes = sortNotes()
-        guard let firstNote = sortedNotes.first else {
-            return
-        }
-        
-        if firstNote.text.isEmpty {
-            model.deleteNote(with: firstNote.id)
-        }
-    }
-    
 }
 
 // MARK: - UI Elements
 
-private extension NotesListController {// private?
+private extension NotesListController {
     
     func setupView() {
         view.addSubview(contentView)
@@ -98,9 +86,43 @@ private extension NotesListController {// private?
     
 }
 
-// MARK: - Протокол контроллера
+// MARK: - ??
+
+private extension NotesListController {
+    
+    private func sortNotes() -> [Note] {
+        let notes = model.notes
+        let sortedNotes = notes.sorted { $0.date > $1.date }
+        return sortedNotes
+    }
+    
+    private func removeNoteIfEmpty () {
+        let sortedNotes = sortNotes()
+        guard let firstNote = sortedNotes.first else {
+            return
+        }
+        
+        if firstNote.text.isEmpty {
+            model.deleteNote(with: firstNote.id)
+        }
+    }
+    
+}
+
+// MARK: - Протокол контроллера cвязанный с событиями в модели
 
 extension NotesListController: NotesListControllerProtocol {
+    
+    func didUpdate() {
+        let sortedNotes = sortNotes()
+        contentView.update(for: NotesListView.ViewModel(notes: sortedNotes))
+    }
+    
+}
+
+//MARK: - Протокол контроллера связаный с взаимодействием пользователя во View
+
+extension NotesListController: NotesListViewInteractionProtocol {
     
     func didSelectNote(with id: String) {
         guard let note = model.notes.first(where: { $0.id == id }) else { return }
@@ -111,7 +133,7 @@ extension NotesListController: NotesListControllerProtocol {
         navigationController?.pushViewController(detailController, animated: true)
     }
     
-    func didDeleteNote(with id: String) {
+    func didTapOnDeleteNote(with id: String) {
         model.deleteNote(with: id)
     }
     
@@ -121,11 +143,6 @@ extension NotesListController: NotesListControllerProtocol {
         model.controller = detailController
         detailController.delegate = self
         navigationController?.pushViewController(detailController, animated: true)
-    }
-    
-    func didUpdate() {
-        let sortedNote = sortNotes()
-        contentView.update(for: NotesListView.ViewModel(notes: sortedNote))
     }
     
 }

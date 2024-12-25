@@ -5,7 +5,7 @@
 //  Created by Дмитрий Исаев on 26.09.2024.
 //
 
-import Foundation //Старая структура
+import Foundation
 
 struct Note {
     var text: String

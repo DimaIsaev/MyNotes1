@@ -24,9 +24,9 @@ final class NotesListView: UIView {
     
     private var viewModel: ViewModel? // private?
     
-    private weak var controller: NotesListControllerProtocol? // private?
+    private weak var controller: NotesListViewInteractionProtocol? // private?
     
-    init(controller: NotesListControllerProtocol) {
+    init(controller: NotesListViewInteractionProtocol) {
         self.controller = controller
         super.init(frame: .zero)
         setupLayout()
@@ -70,7 +70,7 @@ extension NotesListView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             if let id = viewModel?.notes[indexPath.row].id {
-                controller?.didDeleteNote(with: id)
+                controller?.didTapOnDeleteNote(with: id)
             }
         }
     }

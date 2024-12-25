@@ -10,7 +10,7 @@ import UIKit
 protocol NoteDetailControllerProtocol: AnyObject {
     
     func didChange(text: String)
-    func didBeginEditing() //eбрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
+    func didBeginEditing()
     
 }
 
@@ -48,17 +48,22 @@ final class NoteDetailController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        contentView.startTextViewListening()
         if model.isNew {
             contentView.becomeFirstResponder()
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        contentView.stopTextViewListening()
     }
     
 }
 
 // MARK: - UI Elements
 
-private extension NoteDetailController { //private?
+private extension NoteDetailController {
     
     func setupView() {
         view.addSubview(contentView)
@@ -100,7 +105,7 @@ extension NoteDetailController: NoteDetailControllerProtocol {
         }
     }
     
-    func didBeginEditing() { //убрал аргумент with text. Текста не будет он в любом случае сохранит пустую строку
+    func didBeginEditing() {
         setupNavigationBarItem()
         
         if model.isNew {
