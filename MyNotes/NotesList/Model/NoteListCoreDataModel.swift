@@ -43,7 +43,7 @@ class NoteListCoreDataModel {
         }
     }
     
-    func fetchNotes() -> [NoteEntity] { //может опционал вернуть?
+    func fetchNotes() -> [NoteEntity] {
         let request: NSFetchRequest<NoteEntity> = NoteEntity.fetchRequest()
         do {
             return try viewContext.fetch(request)
@@ -51,7 +51,7 @@ class NoteListCoreDataModel {
             print(error.localizedDescription)
         }
         
-        return [] // вернуть пустой или опционал?
+        return []
     }
     
 }

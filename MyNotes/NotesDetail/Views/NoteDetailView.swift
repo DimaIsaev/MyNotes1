@@ -18,7 +18,15 @@ protocol NoteDetailViewProtocol: UIView {
 
 final class NoteDetailView: UIView {
     
+    enum ToolButtons: CaseIterable { //Добавлено перечисление кнопок (посмотреть нейминги)
+        case checklist
+        case addFile
+        case drawing
+        case addNewNote
+    }
+    
     private lazy var textView: UITextView = makeTextView()
+    private lazy var toolButtonsStack: UIStackView = makeToolButtonsStack() //Добавлен стек кнопок (посмотреть нейминги)
     
     private var controller: NoteDetailControllerProtocol // private?
     
@@ -109,14 +117,20 @@ extension NoteDetailView: NoteDetailViewProtocol {
 
 private extension NoteDetailView {
     
-    func setupLoyaut() {
+    func setupLoyaut() { // добавление на view и NSLayoutConstraint для стека
         addSubview(textView)
+        addSubview(toolButtonsStack)
         
         NSLayoutConstraint.activate([
+            textView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
             textView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            textView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 45),
-            textView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -56),
-            textView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            textView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -35),
+            textView.bottomAnchor.constraint(equalTo: toolButtonsStack.topAnchor, constant: -10),
+            
+            toolButtonsStack.heightAnchor.constraint(equalToConstant: 30),
+            toolButtonsStack.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -10),
+            toolButtonsStack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            toolButtonsStack.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10),
         ])
     }
     
@@ -155,6 +169,46 @@ private extension NoteDetailView {
         }
         
         return nil
+    }
+    
+    func makeTool(button: ToolButtons) -> UIButton { // добавлена функция создания кнопки
+        let toolButton = UIButton(type: .system)
+        toolButton.tintColor = .systemOrange
+        toolButton.translatesAutoresizingMaskIntoConstraints = false
+        toolButton.widthAnchor.constraint(equalToConstant: 50).isActive = true// сделал чуть больше норм?
+        toolButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        switch button {// посмотреть может есть варианты лучше?
+        case .checklist:
+            toolButton.setImage(UIImage(systemName: "checklist"), for: .normal)
+        case .addFile:
+            toolButton.setImage(UIImage(systemName: "paperclip"), for: .normal)
+            toolButton.addTarget(self, action: #selector(didTapAddFileBtn), for: .touchUpInside) //действия добавлять тут норм?
+        case .drawing:
+            toolButton.setImage(UIImage(systemName: "pencil.tip.crop.circle"), for: .normal)
+        case .addNewNote:
+            toolButton.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        }
+        
+        return toolButton
+    }
+    
+    @objc func didTapAddFileBtn() { //Добавлено действие кнопки
+
+    }
+    
+    func makeToolButtonsStack() -> UIStackView { //Создание стека кнопок норм?  (нейминг норм?)
+        let hStack = UIStackView()
+        hStack.axis = .horizontal
+        hStack.distribution = .equalSpacing
+        hStack.alignment = .center
+        hStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        ToolButtons.allCases.forEach { button in // норм добавление?
+            hStack.addArrangedSubview(makeTool(button: button))
+        }
+    
+        return hStack
     }
     
 }

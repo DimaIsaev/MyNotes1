@@ -86,7 +86,7 @@ private extension NotesListController {
     
 }
 
-// MARK: - ??
+// MARK: - Private methods
 
 private extension NotesListController {
     
