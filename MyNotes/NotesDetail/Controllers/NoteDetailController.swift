@@ -11,6 +11,7 @@ protocol NoteDetailControllerProtocol: AnyObject {
     
     func didChange(text: String)
     func didBeginEditing()
+    func didTapAddFileMenuButton(hidden: Bool) //название?
     
 }
 
@@ -111,6 +112,14 @@ extension NoteDetailController: NoteDetailControllerProtocol {
         if model.isNew {
             guard let note = delegate?.didCreateNote() else { return }
             model.update(note: note)
+        }
+    }
+    
+    func didTapAddFileMenuButton(hidden: Bool) {//название?. и аргумент hidden?
+        if hidden {
+            contentView.showAddFileMenu(value: false)
+        } else {
+            contentView.showAddFileMenu(value: true)
         }
     }
     

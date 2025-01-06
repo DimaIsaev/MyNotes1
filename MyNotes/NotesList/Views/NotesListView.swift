@@ -116,13 +116,9 @@ private extension NotesListView {
         return tableView
     }
     
-    @objc func didTapAddButton() {
-        controller?.didTapAddBtn()
-    }
-    
     func makeAddButton() -> UIButton {
         let btn = UIButton()
-        btn.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(addButtonAction), for: .touchUpInside)
         btn.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
         btn.contentVerticalAlignment = .fill
         btn.contentHorizontalAlignment = .fill
@@ -131,6 +127,10 @@ private extension NotesListView {
         btn.widthAnchor.constraint(equalToConstant: 30).isActive = true
         btn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return btn
+    }
+    
+    @objc func addButtonAction() {
+        controller?.didTapAddBtn()
     }
     
 }
