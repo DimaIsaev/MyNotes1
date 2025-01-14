@@ -64,7 +64,7 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         let notesEntities = fetchNotes()
         var notes = [Note]()
         for note in notesEntities {
-            notes.append(Note(text: note.text, id: note.id, date: note.date))
+            notes.append(Note(text: note.text, id: note.id, date: note.date, fileURLs: note.fileURLs))
         }
         return notes
     }
@@ -76,7 +76,7 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         note.date = Date()
         
         saveContext()
-        return Note(text: note.text, id: note.id, date: note.date)
+        return Note(text: note.text, id: note.id, date: note.date, fileURLs: note.fileURLs)
     }
     
     func updateNote(with id: String, newText: String) -> Note? {
@@ -87,7 +87,7 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         note.date = Date()
         
         saveContext()
-        return Note(text: newText, id: note.id, date: note.date)
+        return Note(text: newText, id: note.id, date: note.date, fileURLs: note.fileURLs)
     }
     
     func deleteNote(with id: String) {

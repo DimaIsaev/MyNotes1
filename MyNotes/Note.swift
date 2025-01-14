@@ -11,4 +11,5 @@ struct Note {
     var text: String
     let id: String
     var date: Date
+    var fileURLs: [URL]
 }

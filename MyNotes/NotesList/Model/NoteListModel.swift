@@ -32,7 +32,7 @@ extension NoteListModel: NoteListModelProtocol {
     }
     
     func createNote() -> Note {
-        let note = Note(text: "", id: UUID().uuidString, date: Date())
+        let note = Note(text: "", id: UUID().uuidString, date: Date(), fileURLs: [])//??
         storedNotes.append(note)
         return note
     }
