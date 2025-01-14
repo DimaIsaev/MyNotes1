@@ -51,6 +51,60 @@ final class NotesListController: UIViewController {
     
 }
 
+// MARK: - Протокол контроллера cвязанный с событиями в модели
+
+extension NotesListController: NotesListControllerProtocol {
+    
+    func didUpdate() {
+        let sortedNotes = sortNotes()
+        contentView.update(for: NotesListView.ViewModel(notes: sortedNotes))
+    }
+    
+}
+
+//MARK: - Протокол контроллера связаный с взаимодействием пользователя во View
+
+extension NotesListController: NotesListViewInteractionProtocol {
+    
+    func didSelectNote(with id: String) {
+        guard let note = model.notes.first(where: { $0.id == id }) else { return }
+        let model = NoteDetailModel(storedNote: note)
+        let detailController = NoteDetailController(model: model)
+        model.controller = detailController
+        detailController.delegate = self
+        navigationController?.pushViewController(detailController, animated: true)
+    }
+    
+    func didTapOnDeleteNote(with id: String) {
+        model.deleteNote(with: id)
+    }
+    
+    func didTapAddBtn() {
+        let model = NoteDetailModel(storedNote: nil)
+        let detailController = NoteDetailController(model: model)
+        model.controller = detailController
+        detailController.delegate = self
+        navigationController?.pushViewController(detailController, animated: true)
+    }
+    
+}
+
+// MARK: - Delegated methods
+
+extension NotesListController: NoteDetailControllerDelegate {
+    
+    func didCreateNote() -> Note {
+        let note = model.createNote()
+        return note
+    }
+    
+    func didEditNote(with id: String, text: String) -> Note? {
+        let note = model.updateNote(with: id, newText: text)
+        return note
+    }
+    
+}
+
 // MARK: - UI Elements
 
 private extension NotesListController {
@@ -105,60 +159,6 @@ private extension NotesListController {
         if firstNote.text.isEmpty {
             model.deleteNote(with: firstNote.id)
         }
-    }
-    
-}
-
-// MARK: - Протокол контроллера cвязанный с событиями в модели
-
-extension NotesListController: NotesListControllerProtocol {
-    
-    func didUpdate() {
-        let sortedNotes = sortNotes()
-        contentView.update(for: NotesListView.ViewModel(notes: sortedNotes))
-    }
-    
-}
-
-//MARK: - Протокол контроллера связаный с взаимодействием пользователя во View
-
-extension NotesListController: NotesListViewInteractionProtocol {
-    
-    func didSelectNote(with id: String) {
-        guard let note = model.notes.first(where: { $0.id == id }) else { return }
-        let model = NoteDetailModel(storedNote: note)
-        let detailController = NoteDetailController(model: model)
-        model.controller = detailController
-        detailController.delegate = self
-        navigationController?.pushViewController(detailController, animated: true)
-    }
-    
-    func didTapOnDeleteNote(with id: String) {
-        model.deleteNote(with: id)
-    }
-    
-    func didTapAddBtn() {
-        let model = NoteDetailModel(storedNote: nil)
-        let detailController = NoteDetailController(model: model)
-        model.controller = detailController
-        detailController.delegate = self
-        navigationController?.pushViewController(detailController, animated: true)
-    }
-    
-}
-
-// MARK: - Delegated methods
-
-extension NotesListController: NoteDetailControllerDelegate {
-    
-    func didCreateNote() -> Note {
-        let note = model.createNote()
-        return note
-    }
-    
-    func didEditNote(with id: String, text: String) -> Note? {
-        let note = model.updateNote(with: id, newText: text)
-        return note
     }
     
 }

@@ -260,7 +260,7 @@ private extension NoteDetailView {
         ToolButtons.allCases.forEach { button in // норм добавление кнопок?
             hStack.addArrangedSubview(makeTool(button: button))
         }
-    
+        
         return hStack
     }
     
