@@ -10,7 +10,7 @@ import UIKit
 protocol NoteDetailViewProtocol: UIView {
     
     func setText(text: String?)
-    func showAddFileMenu(value: Bool) //имя? Аргумент может на status поменять?
+    func hideAddFileMenu(value: Bool) //имя? Аргумент может на status поменять?
     
     func startTextViewListening()
     func stopTextViewListening()
@@ -148,7 +148,7 @@ extension NoteDetailView: NoteDetailViewProtocol {
         textView.attributedText = textCombination
     }
     
-    func showAddFileMenu(value: Bool) { //тоже глянь в целом
+    func hideAddFileMenu(value: Bool) { //тоже глянь в целом
         addButtonsStack.isHidden = value
     }
     
@@ -265,7 +265,7 @@ private extension NoteDetailView {
     }
     
     //MARK: Add Buttons
-    func makeAdd(button: AddButtons) -> UIButton { //нейминг? Порядок написания кода: Вроде настраиваю кнопку, а речь про Button только в конце функции.
+    func makeAdd(button: AddButtons) -> UIButton { //нейминг? Порядок написания кода: Вроде настраиваю кнопку, а речь про Button только в середине функции.
         var configurtion = UIButton.Configuration.filled()
         configurtion.background.cornerRadius = 0
         configurtion.baseBackgroundColor = UIColor(red: 31.0/255.0, green: 31.0/255.0, blue: 31.0/255.0, alpha: 1.0)//так цвет норм задавать? Может добавит в Assets через колориметр Xcode(а)
@@ -275,6 +275,9 @@ private extension NoteDetailView {
         configurtion.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 15)
         configurtion.imageReservation = 27
         configurtion.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15)
+        
+        let addButton = UIButton() //translatesAutoresizingMaskIntoConstraints нужно? Вроде не влияет на результат
+        addButton.contentHorizontalAlignment = .fill
         
         switch button {
         case .attachFile:
@@ -286,6 +289,7 @@ private extension NoteDetailView {
         case .selectPhotoOrVideo:
             configurtion.title = button.label
             configurtion.image = button.image
+            addButton.addTarget(self, action: #selector(addPhotoOrVideoButtonAction), for: .touchUpInside)
         case .takePhotoOrVideo:
             configurtion.title = button.label
             configurtion.image = button.image
@@ -297,11 +301,14 @@ private extension NoteDetailView {
             configurtion.image = button.image
         }
         
-        let addButton = UIButton() //translatesAutoresizingMaskIntoConstraints нужно? Вроде не влияет на результат
-        addButton.contentHorizontalAlignment = .fill
+        
         addButton.configuration = configurtion
         
         return addButton
+    }
+    
+    @objc func addPhotoOrVideoButtonAction() { //писать после создания кнопки?до?
+        controller.didTapAddPhotoOrVideoButton()
     }
     
     func makeAddButtonsStack() -> UIStackView {//название норм?

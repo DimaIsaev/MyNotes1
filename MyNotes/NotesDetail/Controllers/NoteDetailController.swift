@@ -12,6 +12,7 @@ protocol NoteDetailControllerProtocol: AnyObject {
     func didChange(text: String)
     func didBeginEditing()
     func didTapAddFileMenuButton(hidden: Bool) //название?
+    func didTapAddPhotoOrVideoButton()
     
 }
 
@@ -117,10 +118,32 @@ extension NoteDetailController: NoteDetailControllerProtocol {
     
     func didTapAddFileMenuButton(hidden: Bool) {//название?. и аргумент hidden?
         if hidden {
-            contentView.showAddFileMenu(value: false)
+            contentView.hideAddFileMenu(value: false)
         } else {
-            contentView.showAddFileMenu(value: true)
+            contentView.hideAddFileMenu(value: true)
         }
+    }
+    
+    func didTapAddPhotoOrVideoButton() {
+        contentView.hideAddFileMenu(value: true)
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        self.present(imagePickerController, animated: true)
+    }
+    
+}
+
+//MARK: - UIImagePickerController methods
+
+extension NoteDetailController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
     }
     
 }
