@@ -80,7 +80,8 @@ extension NotesListController: NotesListViewInteractionProtocol {
     }
     
     func didTapAddBtn() {
-        let model = NoteDetailModel(storedNote: nil)
+        let note = model.createNote() //может не возвращать note. а взять заметку по model.notes.last?
+        let model = NoteDetailModel(storedNote: note)
         let detailController = NoteDetailController(model: model)
         model.controller = detailController
         detailController.delegate = self
@@ -92,11 +93,6 @@ extension NotesListController: NotesListViewInteractionProtocol {
 // MARK: - Delegated methods
 
 extension NotesListController: NoteDetailControllerDelegate {
-    
-    func didCreateNote() -> Note {
-        let note = model.createNote()
-        return note
-    }
     
     func didEditTextNote(with id: String, newText: String)  {
         model.editTextNote(with: id, newText: newText)

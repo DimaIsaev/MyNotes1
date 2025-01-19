@@ -9,10 +9,9 @@ import Foundation
 
 protocol NoteDetailModelProtocol {
     
-    var note: Note? { get }
-    var isNew: Bool { get }
+    var note: Note { get }
     
-    func update(note: Note)
+//    func update(note: Note) //пока не нужен, но преследить возможно нужен
     
 }
 
@@ -20,9 +19,9 @@ final class NoteDetailModel {
     
     weak var controller: NoteDetailControllerProtocol?
     
-    public var storedNote: Note?
+    public var storedNote: Note
     
-    init(storedNote: Note?) {
+    init(storedNote: Note) {
         self.storedNote = storedNote
     }
     
@@ -32,14 +31,10 @@ final class NoteDetailModel {
 
 extension NoteDetailModel: NoteDetailModelProtocol {
     
-    var note: Note? { storedNote }
+    var note: Note { storedNote }
     
-    var isNew: Bool {
-        return note == nil
-    }
-    
-    func update(note: Note) {
-        storedNote = note
-    }
+//    func update(note: Note) {
+//        storedNote = note
+//    }
     
 }

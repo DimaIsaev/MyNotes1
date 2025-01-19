@@ -18,7 +18,6 @@ protocol NoteDetailControllerProtocol: AnyObject {
 
 protocol NoteDetailControllerDelegate: AnyObject {
     
-    func didCreateNote() -> Note
     func didEditTextNote(with id: String, newText: String)
     
 }
@@ -45,13 +44,14 @@ final class NoteDetailController: UIViewController {
         self.navigationItem.largeTitleDisplayMode = .never
         setupView()
         
-        contentView.setText(text: model.note?.text)
+        contentView.setText(text: model.note.text)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         contentView.startTextViewListening()
-        if model.isNew {
+        
+        if model.note.text.isEmpty {
             contentView.becomeFirstResponder()
         }
     }
@@ -68,19 +68,12 @@ final class NoteDetailController: UIViewController {
 extension NoteDetailController: NoteDetailControllerProtocol {
     
     func didChange(text: String) {
-        if !model.isNew {
-            guard let id = model.note?.id else { return }
-            delegate?.didEditTextNote(with: id, newText: text)
-        }
+        let id = model.note.id
+        delegate?.didEditTextNote(with: id, newText: text)
     }
     
     func didBeginEditing() {
         setupNavigationBarItem()
-        
-        if model.isNew {
-            guard let note = delegate?.didCreateNote() else { return }
-            model.update(note: note)
-        }
     }
     
     func didTapAddFileMenuButton(hidden: Bool) {//название?. и аргумент hidden?
