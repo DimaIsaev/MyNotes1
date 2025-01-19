@@ -19,7 +19,7 @@ protocol NoteDetailControllerProtocol: AnyObject {
 protocol NoteDetailControllerDelegate: AnyObject {
     
     func didCreateNote() -> Note
-    func didEditNote(with id: String, text: String) -> Note?
+    func didEditTextNote(with id: String, newText: String)
     
 }
 
@@ -69,9 +69,8 @@ extension NoteDetailController: NoteDetailControllerProtocol {
     
     func didChange(text: String) {
         if !model.isNew {
-            guard let id = model.note?.id,
-                  let note = delegate?.didEditNote(with: id, text: text) else { return }
-            model.update(note: note)
+            guard let id = model.note?.id else { return }
+            delegate?.didEditTextNote(with: id, newText: text)
         }
     }
     

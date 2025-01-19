@@ -18,7 +18,7 @@ extension NoteEntity {
     @NSManaged public var text: String
     @NSManaged public var date: Date
     @NSManaged public var id: String
-    @NSManaged public var fileURLs: [URL]//optional в моделе. Нужна миграция
+    @NSManaged public var fileNames: [String]?
     
 }
 

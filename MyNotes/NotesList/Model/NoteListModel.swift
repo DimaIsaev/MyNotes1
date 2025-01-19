@@ -32,7 +32,7 @@ extension NoteListModel: NoteListModelProtocol {
     }
     
     func createNote() -> Note {
-        let note = Note(text: "", id: UUID().uuidString, date: Date(), fileURLs: [])//??
+        let note = Note(text: "", id: UUID().uuidString, date: Date())//??
         storedNotes.append(note)
         return note
     }
@@ -46,17 +46,15 @@ extension NoteListModel: NoteListModelProtocol {
         }
     }
     
-    func updateNote(with id: String, newText: String) -> Note? {
+    func editTextNote(with id: String, newText: String) {
         for (index, note) in storedNotes.enumerated() {
             if id == note.id {
                 var note = storedNotes[index]
                 note.text = newText
                 note.date = Date()
                 storedNotes[index] = note
-                return storedNotes[index]
             }
         }
-        return nil
     }
     
 }

@@ -98,9 +98,8 @@ extension NotesListController: NoteDetailControllerDelegate {
         return note
     }
     
-    func didEditNote(with id: String, text: String) -> Note? {
-        let note = model.updateNote(with: id, newText: text)
-        return note
+    func didEditTextNote(with id: String, newText: String)  {
+        model.editTextNote(with: id, newText: newText)
     }
     
 }

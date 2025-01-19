@@ -64,7 +64,7 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         let notesEntities = fetchNotes()
         var notes = [Note]()
         for note in notesEntities {
-            notes.append(Note(text: note.text, id: note.id, date: note.date, fileURLs: note.fileURLs))
+            notes.append(Note(text: note.text, id: note.id, date: note.date, fileNames: note.fileNames))
         }
         return notes
     }
@@ -76,18 +76,7 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         note.date = Date()
         
         saveContext()
-        return Note(text: note.text, id: note.id, date: note.date, fileURLs: note.fileURLs)
-    }
-    
-    func updateNote(with id: String, newText: String) -> Note? {
-        let request: NSFetchRequest<NoteEntity> = NoteEntity.fetchRequest()
-        guard let notes = try? viewContext.fetch(request),
-              let note = notes.first(where: {$0.id == id}) else { return nil }
-        note.text = newText
-        note.date = Date()
-        
-        saveContext()
-        return Note(text: newText, id: note.id, date: note.date, fileURLs: note.fileURLs)
+        return Note(text: note.text, id: note.id, date: note.date, fileNames: note.fileNames)
     }
     
     func deleteNote(with id: String) {
@@ -95,6 +84,16 @@ extension NoteListCoreDataModel: NoteListModelProtocol {
         guard let notes = try? viewContext.fetch(request),
               let note = notes.first(where: {$0.id == id}) else { return }
         viewContext.delete(note)
+        
+        saveContext()
+    }
+    
+    func editTextNote(with id: String, newText: String) {
+        let request: NSFetchRequest<NoteEntity> = NoteEntity.fetchRequest()
+        guard let notes = try? viewContext.fetch(request),
+              let note = notes.first(where: {$0.id == id}) else { return }
+        note.text = newText
+        note.date = Date()
         
         saveContext()
     }
