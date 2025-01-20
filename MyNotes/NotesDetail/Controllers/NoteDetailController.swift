@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Photos
 
 protocol NoteDetailControllerProtocol: AnyObject {
     
@@ -84,12 +85,10 @@ extension NoteDetailController: NoteDetailControllerProtocol {
         }
     }
     
-    func didTapAddPhotoOrVideoButton() {
+    func didTapAddPhotoOrVideoButton() { //посмотреть порядок кода и в целом глянуть
         contentView.hideAddFileMenu(value: true)
-        
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        self.present(imagePickerController, animated: true)
+        showImagePickerController()
+        requestPhotoLibraryAccess()
     }
     
 }
@@ -136,6 +135,42 @@ private extension NoteDetailController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+}
+
+//MARK: - Private methods
+
+private extension NoteDetailController {
+    
+    func showImagePickerController() { // 1)можно не вызывать отдельной функцией. 2) Как вариант убрать в extention UI Elements
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        self.present(imagePickerController, animated: true)
+    }
+    
+    func requestPhotoLibraryAccess() { //возможно просто оставить пустые {} requestAuthorization если не надо обрабатывать или break
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        switch status {
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: PHAccessLevel.readWrite) { newStatus in
+                if newStatus == .authorized {// можно вообще убрать
+                    print("Доступ предоставлен.")
+                } else {
+                    print("Доступ запрещен.")
+                }
+            }
+        case .restricted:
+            print("Доступ ограничен.")
+        case .denied:
+            print("Досуп запрещен.")
+        case .authorized:
+            print("Доступ уже предоставлен.")//тут можно везде break поставить
+        case .limited:
+            print("Доступ ограничен.")
+        default:
+            print("Неизвестный статус авторизации.")
+        }
     }
     
 }

@@ -402,6 +402,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyNotes/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Нам нужен доступ, чтобы вы могли добавлять фотографии в заметки.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Нам нужен доступ, чтобы вы могли добавлять фотографии в заметки.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -428,6 +430,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyNotes/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Нам нужен доступ, чтобы вы могли добавлять фотографии в заметки.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Нам нужен доступ, чтобы вы могли добавлять фотографии в заметки.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
